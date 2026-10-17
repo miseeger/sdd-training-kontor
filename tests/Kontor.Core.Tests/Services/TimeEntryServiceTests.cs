@@ -99,6 +99,25 @@ public sealed class TimeEntryServiceTests
         Assert.HasCount(2, _repository.Entries);
     }
 
+    // data-model TimeEntry.Note: optional, max. 500 Zeichen
+    [TestMethod]
+    public async Task BookAsync_NoteLongerThan500Characters_IsRejected()
+    {
+        var result = await _service.BookAsync(Request(JunaSato, NslAlb01, November2, 8, 0, 12, 0, new string('x', 501)));
+
+        Assert.IsFalse(result.Succeeded);
+        Assert.AreEqual(TimeEntryService.NoteRuleName, result.ViolatedRule);
+        Assert.HasCount(0, _repository.Entries);
+    }
+
+    [TestMethod]
+    public async Task BookAsync_NoteWith500Characters_IsSaved()
+    {
+        var result = await _service.BookAsync(Request(JunaSato, NslAlb01, November2, 8, 0, 12, 0, new string('x', 500)));
+
+        Assert.IsTrue(result.Succeeded);
+    }
+
     internal static BookingRequest Request(int employeeId, int projectId, DateOnly date, int startHour, int startMinute, int endHour, int endMinute, string? note = null) =>
         new(employeeId, projectId, date, new TimeOnly(startHour, startMinute), new TimeOnly(endHour, endMinute), note);
 }
