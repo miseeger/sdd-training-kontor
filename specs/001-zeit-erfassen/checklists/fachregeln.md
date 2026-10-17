@@ -11,15 +11,15 @@
 ## Requirement Clarity
 
 - [ ] CHK001 Ist „kaufmännisch runden“ eindeutig definiert, einschließlich des Falls genau zwischen zwei Viertelstunden? [Clarity, Spec §FR-004]
-- [ ] CHK002 Ist festgelegt, ob Beginn und Ende einzeln oder die Dauer gerundet wird, und steht das in den Anforderungen statt nur in den Annahmen? [Clarity, Spec §FR-004, Assumption]
+- [x] CHK002 Ist festgelegt, ob Beginn und Ende einzeln oder die Dauer gerundet wird, und steht das in den Anforderungen statt nur in den Annahmen? [Clarity, Spec §FR-004, Assumption]
 - [ ] CHK003 Ist „Tagesarbeitszeit“ definiert, z. B. als Summe der gerundeten Dauern aller Buchungen eines Tages? [Clarity, Spec §FR-007, §FR-008]
-- [ ] CHK004 Sind die Schwellen der Pausenregel eindeutig („mehr als 6 Stunden“ gegenüber „ab 6 Stunden“)? [Clarity, Spec §FR-007]
-- [ ] CHK005 Ist festgelegt, was „die verletzte Regel benennen“ für die Nutzerin bedeutet (Wortlaut oder Mindestinhalt des Hinweises)? [Clarity, Spec §FR-009]
+- [x] CHK004 Sind die Schwellen der Pausenregel eindeutig („mehr als 6 Stunden“ gegenüber „ab 6 Stunden“)? [Clarity, Spec §FR-007]
+- [x] CHK005 Ist festgelegt, was „die verletzte Regel benennen“ für die Nutzerin bedeutet (Wortlaut oder Mindestinhalt des Hinweises)? [Clarity, Spec §FR-009]
 
 ## Requirement Consistency
 
-- [ ] CHK006 Sind die Akzeptanzszenarien von User Story 1 mit der Pausenregel (FR-007) und der Tageshöchstarbeitszeit (FR-008) vereinbar? [Consistency, Spec §US1, §FR-007, §FR-008]
-- [ ] CHK007 Ist die Reihenfolge „erst runden, dann prüfen“ in allen Regeln gleich angewendet, auch bei der Überschneidung? [Consistency, Spec §FR-004, §FR-006]
+- [x] CHK006 Sind die Akzeptanzszenarien von User Story 1 mit der Pausenregel (FR-007) und der Tageshöchstarbeitszeit (FR-008) vereinbar? [Consistency, Spec §US1, §FR-007, §FR-008]
+- [x] CHK007 Ist die Reihenfolge „erst runden, dann prüfen“ in allen Regeln gleich angewendet, auch bei der Überschneidung? [Consistency, Spec §FR-004, §FR-006]
 - [ ] CHK008 Stimmen die Begriffe für die Person (Mitarbeitende, Technikerin, Person) überall überein? [Consistency]
 
 ## Edge Case Coverage
@@ -31,8 +31,8 @@
 
 ## Requirement Completeness
 
-- [ ] CHK013 Ist für jede Regel (Rundung, Überschneidung, Pause, Höchstarbeitszeit, Mitternacht) mindestens ein Akzeptanzszenario oder Edge Case formuliert? [Completeness, Spec §US1, §US2, Edge Cases]
-- [ ] CHK014 Sind die fest hinterlegten Mitarbeitenden und Projekte als Abhängigkeit dokumentiert, einschließlich der späteren Übernahme aus Dockyard? [Dependency, Spec §Assumptions]
+- [x] CHK013 Ist für jede Regel (Rundung, Überschneidung, Pause, Höchstarbeitszeit, Mitternacht) mindestens ein Akzeptanzszenario oder Edge Case formuliert? [Completeness, Spec §US1, §US2, Edge Cases]
+- [x] CHK014 Sind die fest hinterlegten Mitarbeitenden und Projekte als Abhängigkeit dokumentiert, einschließlich der späteren Übernahme aus Dockyard? [Dependency, Spec §Assumptions]
 
 ## Notes
 
@@ -40,4 +40,5 @@
 - Leave items unchecked when they still require clarification, correction, or reviewer evaluation
 - `/speckit-implement` reads checklist checkbox state as a gate and must not modify markers
 - `checklists/requirements.md` has a separate built-in lifecycle maintained by `/speckit-specify` and `/speckit-clarify`
+- Review 2026-10-17 (Fachseite und Entwicklung): 7 von 14 Punkten erfüllt. CHK001, CHK003, CHK008, CHK009, CHK010, CHK011 und CHK012 bleiben bewusst offen; `/speckit-implement` meldet sie, die Umsetzung darf trotzdem starten.
 - Fokus laut Auftrag: Rundung, Überschneidung, Pausenpflicht, Tageshöchstarbeitszeit; Standard-Tiefe; Publikum: Fachseite und Entwicklung vor `implement`. Performance und Sicherheit ausgeschlossen.
