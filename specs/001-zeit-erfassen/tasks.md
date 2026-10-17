@@ -29,15 +29,15 @@ description: "Task list for feature 001 Zeit erfassen"
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 `global.json` anlegen: .NET-10-SDK mit `rollForward: latestFeature` und `msbuild-sdks` mit `MSTest.Sdk` 4.5.1
+- [ ] T001 `global.json` anlegen: nur die .NET-10-SDK-Version mit `rollForward: latestFeature`
 - [ ] T002 `Kontor.slnx` und die Ordner `src/` und `tests/` anlegen
 - [ ] T003 [P] `Directory.Build.props` anlegen: `net10.0`, `Nullable` enable, `ImplicitUsings` enable, `TreatWarningsAsErrors` true
-- [ ] T004 [P] `Directory.Packages.props` anlegen: `ManagePackageVersionsCentrally` true, `Microsoft.EntityFrameworkCore.SqlServer` 10.0.13, `Microsoft.EntityFrameworkCore.Design` 10.0.13, keine Platzhalterversionen
+- [ ] T004 [P] `Directory.Packages.props` anlegen: `ManagePackageVersionsCentrally` true, `Microsoft.EntityFrameworkCore.SqlServer` 10.0.13, `Microsoft.EntityFrameworkCore.Design` 10.0.13, `MSTest` 4.5.1, keine Platzhalterversionen
 - [ ] T005 [P] Lokales Tool-Manifest `.config/dotnet-tools.json` mit `dotnet-ef` 10.0.13 anlegen
 - [ ] T006 Class Library `src/Kontor.Core/Kontor.Core.csproj` anlegen, ohne Paket- und Projektreferenzen
 - [ ] T007 Class Library `src/Kontor.Infrastructure/Kontor.Infrastructure.csproj` anlegen, mit Referenz auf `Kontor.Core` und den EF-Core-Paketen aus T004
 - [ ] T008 Blazor Web App `src/Kontor.Web/Kontor.Web.csproj` anlegen (`--interactivity Server --all-interactive`), mit Referenzen auf `Kontor.Core` und `Kontor.Infrastructure`
-- [ ] T009 Testprojekt `tests/Kontor.Core.Tests/Kontor.Core.Tests.csproj` mit `MSTest.Sdk` anlegen, mit Referenz auf `Kontor.Core`
+- [ ] T009 Testprojekt `tests/Kontor.Core.Tests/Kontor.Core.Tests.csproj` als SDK-Projekt mit `PackageReference` auf `MSTest` (Version aus `Directory.Packages.props`) anlegen, mit Referenz auf `Kontor.Core`
 - [ ] T010 Alle Projekte in `Kontor.slnx` aufnehmen und `.gitignore` für .NET anlegen
 
 ---
@@ -56,9 +56,9 @@ description: "Task list for feature 001 Zeit erfassen"
 - [ ] T016 Seed-Daten per `HasData` in `src/Kontor.Infrastructure/Configurations/`: Mitarbeitende Ilka Brandt, Tomás Okoye, Juna Sato, Rik Halvorsen; Projekte `NSL-ALB-01` „Antriebswartung Albatros“, `KBA-TG3-04` „Schildgenerator-Kalibrierung Tiefgrund III“, `HFL-PER-02` „Lebenserhaltung prüfen Perihel“
 - [ ] T017 Repository-Implementierungen (nur Hinzufügen und Lesen) in `src/Kontor.Infrastructure/Repositories/`
 - [ ] T018 Registrierung `AddKontorInfrastructure(connectionString)` in `src/Kontor.Infrastructure/DependencyInjection.cs`
-- [ ] T019 `src/Kontor.Web/Program.cs`: Infrastruktur und `TimeEntryService` registrieren, Connection String `KontorDb` für LocalDB in `src/Kontor.Web/appsettings.Development.json`, ausstehende Migrationen in Development beim Start anwenden
+- [ ] T019 `src/Kontor.Web/Program.cs`: Infrastruktur registrieren, Connection String `KontorDb` für LocalDB in `src/Kontor.Web/appsettings.Development.json`, ausstehende Migrationen in Development beim Start anwenden
 - [ ] T020 Erste Migration `InitialCreate` mit dem lokalen Tool erzeugen (`dotnet tool restore`, `dotnet ef migrations add InitialCreate`) in `src/Kontor.Infrastructure/Migrations/`
-- [ ] T021 [P] Test-Double `InMemoryTimeEntryRepository` in `tests/Kontor.Core.Tests/Fakes/InMemoryTimeEntryRepository.cs`
+- [ ] T021 Test-Double `InMemoryTimeEntryRepository` in `tests/Kontor.Core.Tests/Fakes/InMemoryTimeEntryRepository.cs`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -85,8 +85,9 @@ description: "Task list for feature 001 Zeit erfassen"
 - [ ] T027 [P] [US1] `MidnightRule` in `src/Kontor.Core/Rules/MidnightRule.cs` (macht T023 grün)
 - [ ] T028 [P] [US1] `OverlapRule` in `src/Kontor.Core/Rules/OverlapRule.cs` (macht T024 grün)
 - [ ] T029 [US1] `BookingResult` und `TimeEntryService` in `src/Kontor.Core/Services/`: runden, `MidnightRule`, `OverlapRule`, speichern; Tagesliste und Tagessumme liefern (macht T025 grün; depends on T026–T028)
-- [ ] T030 [US1] Seite `src/Kontor.Web/Components/Pages/Booking.razor`: Person aus Liste wählen, Datum, Beginn, Ende, Projekt, Notiz (optional, max. 500 Zeichen), Speichern; Hinweis mit verletzter Regel bei Ablehnung; Tagesliste mit Tagessumme; keine Bearbeiten- oder Löschen-Funktion (FR-001, FR-002, FR-003, FR-009, FR-010, FR-011)
-- [ ] T031 [US1] `Booking.razor` als Startseite in die Navigation aufnehmen, Beispielseiten der Vorlage (Counter, Weather) entfernen in `src/Kontor.Web/Components/`
+- [ ] T030 [US1] `TimeEntryService` in `src/Kontor.Web/Program.cs` registrieren
+- [ ] T031 [US1] Seite `src/Kontor.Web/Components/Pages/Booking.razor`: Person aus Liste wählen, Datum, Beginn, Ende, Projekt, Notiz (optional, max. 500 Zeichen), Speichern; Hinweis mit verletzter Regel bei Ablehnung; Tagesliste mit Tagessumme; keine Bearbeiten- oder Löschen-Funktion (FR-001, FR-002, FR-003, FR-009, FR-010, FR-011)
+- [ ] T032 [US1] `Booking.razor` als Startseite in die Navigation aufnehmen, Beispielseiten der Vorlage (Counter, Weather) entfernen in `src/Kontor.Web/Components/`
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -100,15 +101,15 @@ description: "Task list for feature 001 Zeit erfassen"
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T032 [P] [US2] `BreakRuleTests` in `tests/Kontor.Core.Tests/Rules/BreakRuleTests.cs`: mehr als 6 h mit weniger als 30 min Pause abgelehnt, 07:00–11:00 und 11:30–14:00 erlaubt, Lücke unter 15 min zählt nicht, mehr als 9 h verlangt 45 min (FR-007)
-- [ ] T033 [P] [US2] `MaxDailyHoursRuleTests` in `tests/Kontor.Core.Tests/Rules/MaxDailyHoursRuleTests.cs`: mehr als 10 h abgelehnt, genau 10 h erlaubt (FR-008)
-- [ ] T034 [US2] `TimeEntryServiceTests` (User Story 2) in `tests/Kontor.Core.Tests/Services/TimeEntryServiceTests.cs`: die Akzeptanzszenarien von User Story 2; abgelehnt wird die neue Buchung, bestehende bleiben unverändert (FR-009)
+- [ ] T033 [P] [US2] `BreakRuleTests` in `tests/Kontor.Core.Tests/Rules/BreakRuleTests.cs`: mehr als 6 h mit weniger als 30 min Pause abgelehnt, 07:00–11:00 und 11:30–14:00 erlaubt, Lücke unter 15 min zählt nicht, mehr als 9 h verlangt 45 min (FR-007)
+- [ ] T034 [P] [US2] `MaxDailyHoursRuleTests` in `tests/Kontor.Core.Tests/Rules/MaxDailyHoursRuleTests.cs`: mehr als 10 h abgelehnt, genau 10 h erlaubt (FR-008)
+- [ ] T035 [US2] `TimeEntryServiceTests` (User Story 2) in `tests/Kontor.Core.Tests/Services/TimeEntryServiceTests.cs`: die Akzeptanzszenarien von User Story 2; abgelehnt wird die neue Buchung, bestehende bleiben unverändert (FR-009)
 
 ### Implementation for User Story 2
 
-- [ ] T035 [P] [US2] `BreakRule` in `src/Kontor.Core/Rules/BreakRule.cs` (macht T032 grün)
-- [ ] T036 [P] [US2] `MaxDailyHoursRule` in `src/Kontor.Core/Rules/MaxDailyHoursRule.cs` (macht T033 grün)
-- [ ] T037 [US2] `BreakRule` und `MaxDailyHoursRule` nach der `OverlapRule` in `TimeEntryService` einbinden in `src/Kontor.Core/Services/TimeEntryService.cs` (macht T034 grün)
+- [ ] T036 [P] [US2] `BreakRule` in `src/Kontor.Core/Rules/BreakRule.cs` (macht T033 grün)
+- [ ] T037 [P] [US2] `MaxDailyHoursRule` in `src/Kontor.Core/Rules/MaxDailyHoursRule.cs` (macht T034 grün)
+- [ ] T038 [US2] `BreakRule` und `MaxDailyHoursRule` nach der `OverlapRule` in `TimeEntryService` einbinden in `src/Kontor.Core/Services/TimeEntryService.cs` (macht T035 grün)
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -118,8 +119,8 @@ description: "Task list for feature 001 Zeit erfassen"
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T038 [P] `README.md` im Wurzelverzeichnis: Zweck, Voraussetzungen, Verweis auf `specs/001-zeit-erfassen/quickstart.md`
-- [ ] T039 Prüfszenarien aus `specs/001-zeit-erfassen/quickstart.md` durchgehen
+- [ ] T039 [P] `README.md` im Wurzelverzeichnis: Zweck, Voraussetzungen, Verweis auf `specs/001-zeit-erfassen/quickstart.md`
+- [ ] T040 Prüfszenarien aus `specs/001-zeit-erfassen/quickstart.md` durchgehen
 
 ---
 
@@ -130,7 +131,7 @@ description: "Task list for feature 001 Zeit erfassen"
 - **Setup (Phase 1)**: keine Abhängigkeiten
 - **Foundational (Phase 2)**: hängt von Setup ab, blockiert alle User Stories
 - **User Story 1 (Phase 3)**: hängt von Foundational ab
-- **User Story 2 (Phase 4)**: hängt von Foundational ab; T037 erweitert den `TimeEntryService` aus T029
+- **User Story 2 (Phase 4)**: hängt von Foundational ab; T038 erweitert den `TimeEntryService` aus T029
 - **Polish (Phase 5)**: nach den gewünschten User Stories
 
 ### Within Each User Story
@@ -141,9 +142,9 @@ description: "Task list for feature 001 Zeit erfassen"
 ### Parallel Opportunities
 
 - Setup: T003, T004, T005
-- Foundational: T011, T012, T013, T014 sowie T021
+- Foundational: T011, T012, T013, T014
 - User Story 1: Tests T022, T023, T024; danach Regeln T026, T027, T028
-- User Story 2: Tests T032, T033; danach Regeln T035, T036
+- User Story 2: Tests T033, T034; danach Regeln T036, T037
 
 ---
 
