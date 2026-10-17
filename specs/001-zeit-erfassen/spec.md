@@ -17,6 +17,7 @@
 - Q: Welche Buchung wird abgelehnt, wenn eine Regel erst zusammen mit bestehenden Buchungen verletzt ist? → A: Die neue Buchung, die den Verstoß verursacht; bestehende Buchungen bleiben unverändert.
 - Q: Darf die Tageshöchstarbeitszeit von 10 Stunden in begründeten Fällen überschritten werden? → A: Nein, sie gilt ausnahmslos.
 - Q: Wie soll Szenario 3 von User Story 1 zeigen, dass sich berührende Buchungen erlaubt sind, ohne der Pausenregel zu widersprechen? → A: Zweite Buchung 13:00–14:00; mit 6 Stunden Tagesarbeitszeit greift die Pausenregel noch nicht.
+- Q: Welches Beispiel zeigt eine Buchung, die durch die Rundung die Dauer 0 bekommt? → A: 08:01–08:05 (beides wird 08:00); das bisherige Beispiel 08:05–08:10 ergibt nach FR-004 08:00–08:15 und war falsch.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -83,8 +84,9 @@ Nennung der Regel abgelehnt wird.
 
 - Was passiert, wenn das Ende vor oder gleich dem Beginn liegt? → Die Buchung wird
   abgelehnt.
-- Was passiert, wenn eine Buchung durch die Rundung die Dauer 0 bekommt (z. B. 08:05–08:10)?
-  → Die Buchung wird abgelehnt, weil nach der Rundung das Ende nicht nach dem Beginn liegt.
+- Was passiert, wenn eine Buchung durch die Rundung die Dauer 0 bekommt (z. B. 08:01–08:05,
+  beides wird 08:00)? → Die Buchung wird abgelehnt, weil nach der Rundung das Ende nicht nach
+  dem Beginn liegt.
 - Was passiert, wenn sich zwei Buchungen nur an einer Grenze berühren (Ende = Beginn)?
   → Das ist keine Überschneidung.
 - Was passiert bei einer Buchung über Mitternacht? → Sie wird abgelehnt; die Person bucht
