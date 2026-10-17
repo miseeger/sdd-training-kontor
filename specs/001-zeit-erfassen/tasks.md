@@ -74,20 +74,20 @@ description: "Task list for feature 001 Zeit erfassen"
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T022 [P] [US1] `TimeRoundingTests` in `tests/Kontor.Core.Tests/Rules/TimeRoundingTests.cs`: 08:07 → 08:00, 12:53 → 13:00, 08:00 bleibt 08:00 (FR-004)
-- [ ] T023 [P] [US1] `MidnightRuleTests` in `tests/Kontor.Core.Tests/Rules/MidnightRuleTests.cs`: Ende vor oder gleich Beginn abgelehnt, Dauer 0 nach Rundung (08:05–08:10) abgelehnt (FR-005, FR-012)
-- [ ] T024 [P] [US1] `OverlapRuleTests` in `tests/Kontor.Core.Tests/Rules/OverlapRuleTests.cs`: Überschneidung abgelehnt, Berührung (Ende = Beginn) erlaubt, Buchungen anderer Personen zählen nicht (FR-006)
-- [ ] T025 [US1] `TimeEntryServiceTests` (User Story 1) in `tests/Kontor.Core.Tests/Services/TimeEntryServiceTests.cs`: die Akzeptanzszenarien 1–3 von User Story 1; bei Ablehnung ist die verletzte Regel benannt (FR-009); nutzt T021
+- [X] T022 [P] [US1] `TimeRoundingTests` in `tests/Kontor.Core.Tests/Rules/TimeRoundingTests.cs`: 08:07 → 08:00, 12:53 → 13:00, 08:00 bleibt 08:00 (FR-004)
+- [X] T023 [P] [US1] `MidnightRuleTests` in `tests/Kontor.Core.Tests/Rules/MidnightRuleTests.cs`: Ende vor oder gleich Beginn abgelehnt, Dauer 0 nach Rundung (08:05–08:10) abgelehnt (FR-005, FR-012)
+- [X] T024 [P] [US1] `OverlapRuleTests` in `tests/Kontor.Core.Tests/Rules/OverlapRuleTests.cs`: Überschneidung abgelehnt, Berührung (Ende = Beginn) erlaubt, Buchungen anderer Personen zählen nicht (FR-006)
+- [X] T025 [US1] `TimeEntryServiceTests` (User Story 1) in `tests/Kontor.Core.Tests/Services/TimeEntryServiceTests.cs`: die Akzeptanzszenarien 1–3 von User Story 1; bei Ablehnung ist die verletzte Regel benannt (FR-009); nutzt T021
 
 ### Implementation for User Story 1
 
-- [ ] T026 [P] [US1] `TimeRounding` in `src/Kontor.Core/Rules/TimeRounding.cs`: Beginn und Ende einzeln auf die nächste Viertelstunde (macht T022 grün)
-- [ ] T027 [P] [US1] `MidnightRule` in `src/Kontor.Core/Rules/MidnightRule.cs` (macht T023 grün)
-- [ ] T028 [P] [US1] `OverlapRule` in `src/Kontor.Core/Rules/OverlapRule.cs` (macht T024 grün)
-- [ ] T029 [US1] `BookingResult` und `TimeEntryService` in `src/Kontor.Core/Services/`: runden, `MidnightRule`, `OverlapRule`, speichern; Tagesliste und Tagessumme liefern (macht T025 grün; depends on T026–T028)
-- [ ] T030 [US1] `TimeEntryService` in `src/Kontor.Web/Program.cs` registrieren
-- [ ] T031 [US1] Seite `src/Kontor.Web/Components/Pages/Booking.razor`: Person aus Liste wählen, Datum, Beginn, Ende, Projekt, Notiz (optional, max. 500 Zeichen), Speichern; Hinweis mit verletzter Regel bei Ablehnung; Tagesliste mit Tagessumme; keine Bearbeiten- oder Löschen-Funktion (FR-001, FR-002, FR-003, FR-009, FR-010, FR-011)
-- [ ] T032 [US1] `Booking.razor` als Startseite in die Navigation aufnehmen, Beispielseiten der Vorlage (Counter, Weather) entfernen in `src/Kontor.Web/Components/`
+- [X] T026 [P] [US1] `TimeRounding` in `src/Kontor.Core/Rules/TimeRounding.cs`: Beginn und Ende einzeln auf die nächste Viertelstunde (macht T022 grün)
+- [X] T027 [P] [US1] `MidnightRule` in `src/Kontor.Core/Rules/MidnightRule.cs` (macht T023 grün)
+- [X] T028 [P] [US1] `OverlapRule` in `src/Kontor.Core/Rules/OverlapRule.cs` (macht T024 grün)
+- [X] T029 [US1] `BookingResult` und `TimeEntryService` in `src/Kontor.Core/Services/`: runden, `MidnightRule`, `OverlapRule`, speichern; Tagesliste und Tagessumme liefern (macht T025 grün; depends on T026–T028)
+- [X] T030 [US1] `TimeEntryService` in `src/Kontor.Web/Program.cs` registrieren
+- [X] T031 [US1] Seite `src/Kontor.Web/Components/Pages/Booking.razor`: Person aus Liste wählen, Datum, Beginn, Ende, Projekt, Notiz (optional, max. 500 Zeichen), Speichern; Hinweis mit verletzter Regel bei Ablehnung; Tagesliste mit Tagessumme; keine Bearbeiten- oder Löschen-Funktion (FR-001, FR-002, FR-003, FR-009, FR-010, FR-011)
+- [X] T032 [US1] `Booking.razor` als Startseite in die Navigation aufnehmen, Beispielseiten der Vorlage (Counter, Weather) entfernen in `src/Kontor.Web/Components/`
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -101,15 +101,15 @@ description: "Task list for feature 001 Zeit erfassen"
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T033 [P] [US2] `BreakRuleTests` in `tests/Kontor.Core.Tests/Rules/BreakRuleTests.cs`: mehr als 6 h mit weniger als 30 min Pause abgelehnt, 07:00–11:00 und 11:30–14:00 erlaubt, Lücke unter 15 min zählt nicht, mehr als 9 h verlangt 45 min (FR-007)
-- [ ] T034 [P] [US2] `MaxDailyHoursRuleTests` in `tests/Kontor.Core.Tests/Rules/MaxDailyHoursRuleTests.cs`: mehr als 10 h abgelehnt, genau 10 h erlaubt (FR-008)
-- [ ] T035 [US2] `TimeEntryServiceTests` (User Story 2) in `tests/Kontor.Core.Tests/Services/TimeEntryServiceTests.cs`: die Akzeptanzszenarien von User Story 2; abgelehnt wird die neue Buchung, bestehende bleiben unverändert (FR-009)
+- [X] T033 [P] [US2] `BreakRuleTests` in `tests/Kontor.Core.Tests/Rules/BreakRuleTests.cs`: mehr als 6 h mit weniger als 30 min Pause abgelehnt, 07:00–11:00 und 11:30–14:00 erlaubt, Lücke unter 15 min zählt nicht, mehr als 9 h verlangt 45 min (FR-007)
+- [X] T034 [P] [US2] `MaxDailyHoursRuleTests` in `tests/Kontor.Core.Tests/Rules/MaxDailyHoursRuleTests.cs`: mehr als 10 h abgelehnt, genau 10 h erlaubt (FR-008)
+- [X] T035 [US2] `TimeEntryServiceTests` (User Story 2) in `tests/Kontor.Core.Tests/Services/TimeEntryServiceTests.cs`: die Akzeptanzszenarien von User Story 2; abgelehnt wird die neue Buchung, bestehende bleiben unverändert (FR-009)
 
 ### Implementation for User Story 2
 
-- [ ] T036 [P] [US2] `BreakRule` in `src/Kontor.Core/Rules/BreakRule.cs` (macht T033 grün)
-- [ ] T037 [P] [US2] `MaxDailyHoursRule` in `src/Kontor.Core/Rules/MaxDailyHoursRule.cs` (macht T034 grün)
-- [ ] T038 [US2] `BreakRule` und `MaxDailyHoursRule` nach der `OverlapRule` in `TimeEntryService` einbinden in `src/Kontor.Core/Services/TimeEntryService.cs` (macht T035 grün)
+- [X] T036 [P] [US2] `BreakRule` in `src/Kontor.Core/Rules/BreakRule.cs` (macht T033 grün)
+- [X] T037 [P] [US2] `MaxDailyHoursRule` in `src/Kontor.Core/Rules/MaxDailyHoursRule.cs` (macht T034 grün)
+- [X] T038 [US2] `BreakRule` und `MaxDailyHoursRule` nach der `OverlapRule` in `TimeEntryService` einbinden in `src/Kontor.Core/Services/TimeEntryService.cs` (macht T035 grün)
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -119,8 +119,8 @@ description: "Task list for feature 001 Zeit erfassen"
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T039 [P] `README.md` im Wurzelverzeichnis: Zweck, Voraussetzungen, Verweis auf `specs/001-zeit-erfassen/quickstart.md`
-- [ ] T040 Prüfszenarien aus `specs/001-zeit-erfassen/quickstart.md` durchgehen
+- [X] T039 [P] `README.md` im Wurzelverzeichnis: Zweck, Voraussetzungen, Verweis auf `specs/001-zeit-erfassen/quickstart.md`
+- [X] T040 Prüfszenarien aus `specs/001-zeit-erfassen/quickstart.md` durchgehen
 
 ---
 
