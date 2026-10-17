@@ -29,16 +29,16 @@ description: "Task list for feature 001 Zeit erfassen"
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 `global.json` anlegen: nur die .NET-10-SDK-Version mit `rollForward: latestFeature`
-- [ ] T002 `Kontor.slnx` und die Ordner `src/` und `tests/` anlegen
-- [ ] T003 [P] `Directory.Build.props` anlegen: `net10.0`, `Nullable` enable, `ImplicitUsings` enable, `TreatWarningsAsErrors` true
-- [ ] T004 [P] `Directory.Packages.props` anlegen: `ManagePackageVersionsCentrally` true, `Microsoft.EntityFrameworkCore.SqlServer` 10.0.13, `Microsoft.EntityFrameworkCore.Design` 10.0.13, `MSTest` 4.5.1, keine Platzhalterversionen
-- [ ] T005 [P] Lokales Tool-Manifest `.config/dotnet-tools.json` mit `dotnet-ef` 10.0.13 anlegen
-- [ ] T006 Class Library `src/Kontor.Core/Kontor.Core.csproj` anlegen, ohne Paket- und Projektreferenzen
-- [ ] T007 Class Library `src/Kontor.Infrastructure/Kontor.Infrastructure.csproj` anlegen, mit Referenz auf `Kontor.Core` und den EF-Core-Paketen aus T004
-- [ ] T008 Blazor Web App `src/Kontor.Web/Kontor.Web.csproj` anlegen (`--interactivity Server --all-interactive`), mit Referenzen auf `Kontor.Core` und `Kontor.Infrastructure`
-- [ ] T009 Testprojekt `tests/Kontor.Core.Tests/Kontor.Core.Tests.csproj` als SDK-Projekt mit `PackageReference` auf `MSTest` (Version aus `Directory.Packages.props`) anlegen, mit Referenz auf `Kontor.Core`
-- [ ] T010 Alle Projekte in `Kontor.slnx` aufnehmen und `.gitignore` für .NET anlegen
+- [X] T001 `global.json` anlegen: nur die .NET-10-SDK-Version mit `rollForward: latestFeature`
+- [X] T002 `Kontor.slnx` und die Ordner `src/` und `tests/` anlegen
+- [X] T003 [P] `Directory.Build.props` anlegen: `net10.0`, `Nullable` enable, `ImplicitUsings` enable, `TreatWarningsAsErrors` true
+- [X] T004 [P] `Directory.Packages.props` anlegen: `ManagePackageVersionsCentrally` true, `Microsoft.EntityFrameworkCore.SqlServer` 10.0.13, `Microsoft.EntityFrameworkCore.Design` 10.0.13, `MSTest` 4.5.1, keine Platzhalterversionen
+- [X] T005 [P] Lokales Tool-Manifest `.config/dotnet-tools.json` mit `dotnet-ef` 10.0.13 anlegen
+- [X] T006 Class Library `src/Kontor.Core/Kontor.Core.csproj` anlegen, ohne Paket- und Projektreferenzen
+- [X] T007 Class Library `src/Kontor.Infrastructure/Kontor.Infrastructure.csproj` anlegen, mit Referenz auf `Kontor.Core` und den EF-Core-Paketen aus T004
+- [X] T008 Blazor Web App `src/Kontor.Web/Kontor.Web.csproj` anlegen (`--interactivity Server --all-interactive`), mit Referenzen auf `Kontor.Core` und `Kontor.Infrastructure`
+- [X] T009 Testprojekt `tests/Kontor.Core.Tests/Kontor.Core.Tests.csproj` als SDK-Projekt mit `PackageReference` auf `MSTest` (Version aus `Directory.Packages.props`) anlegen, mit Referenz auf `Kontor.Core`
+- [X] T010 Alle Projekte in `Kontor.slnx` aufnehmen und `.gitignore` für .NET anlegen
 
 ---
 
@@ -48,17 +48,17 @@ description: "Task list for feature 001 Zeit erfassen"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T011 [P] Entität `Employee` in `src/Kontor.Core/Domain/Employee.cs`: `Id`, `Name` (required, max. 100 Zeichen)
-- [ ] T012 [P] Entität `Project` in `src/Kontor.Core/Domain/Project.cs`: `Id`, `Key` (required, max. 20 Zeichen, eindeutig), `Name` (required, max. 200 Zeichen)
-- [ ] T013 [P] Entität `TimeEntry` in `src/Kontor.Core/Domain/TimeEntry.cs`: `Id`, `EmployeeId` (required), `ProjectId` (required), `Date` (`DateOnly`, required), `Start` und `End` (`TimeOnly`, required), `Note` (optional, max. 500 Zeichen); keine öffentlichen Setter (Prinzip III)
-- [ ] T014 [P] Schnittstellen `ITimeEntryRepository` (nur `AddAsync` und `GetForEmployeeAndDateAsync`), `IEmployeeRepository`, `IProjectRepository` in `src/Kontor.Core/Abstractions/`
-- [ ] T015 `KontorDbContext` und Entity-Konfigurationen mit den Constraints aus data-model.md und Index auf (`EmployeeId`, `Date`) in `src/Kontor.Infrastructure/KontorDbContext.cs` und `src/Kontor.Infrastructure/Configurations/`
-- [ ] T016 Seed-Daten per `HasData` in `src/Kontor.Infrastructure/Configurations/`: Mitarbeitende Ilka Brandt, Tomás Okoye, Juna Sato, Rik Halvorsen; Projekte `NSL-ALB-01` „Antriebswartung Albatros“, `KBA-TG3-04` „Schildgenerator-Kalibrierung Tiefgrund III“, `HFL-PER-02` „Lebenserhaltung prüfen Perihel“
-- [ ] T017 Repository-Implementierungen (nur Hinzufügen und Lesen) in `src/Kontor.Infrastructure/Repositories/`
-- [ ] T018 Registrierung `AddKontorInfrastructure(connectionString)` in `src/Kontor.Infrastructure/DependencyInjection.cs`
-- [ ] T019 `src/Kontor.Web/Program.cs`: Infrastruktur registrieren, Connection String `KontorDb` für LocalDB in `src/Kontor.Web/appsettings.Development.json`, ausstehende Migrationen in Development beim Start anwenden
-- [ ] T020 Erste Migration `InitialCreate` mit dem lokalen Tool erzeugen (`dotnet tool restore`, `dotnet ef migrations add InitialCreate`) in `src/Kontor.Infrastructure/Migrations/`
-- [ ] T021 Test-Double `InMemoryTimeEntryRepository` in `tests/Kontor.Core.Tests/Fakes/InMemoryTimeEntryRepository.cs`
+- [X] T011 [P] Entität `Employee` in `src/Kontor.Core/Domain/Employee.cs`: `Id`, `Name` (required, max. 100 Zeichen)
+- [X] T012 [P] Entität `Project` in `src/Kontor.Core/Domain/Project.cs`: `Id`, `Key` (required, max. 20 Zeichen, eindeutig), `Name` (required, max. 200 Zeichen)
+- [X] T013 [P] Entität `TimeEntry` in `src/Kontor.Core/Domain/TimeEntry.cs`: `Id`, `EmployeeId` (required), `ProjectId` (required), `Date` (`DateOnly`, required), `Start` und `End` (`TimeOnly`, required), `Note` (optional, max. 500 Zeichen); keine öffentlichen Setter (Prinzip III)
+- [X] T014 [P] Schnittstellen `ITimeEntryRepository` (nur `AddAsync` und `GetForEmployeeAndDateAsync`), `IEmployeeRepository`, `IProjectRepository` in `src/Kontor.Core/Abstractions/`
+- [X] T015 `KontorDbContext` und Entity-Konfigurationen mit den Constraints aus data-model.md und Index auf (`EmployeeId`, `Date`) in `src/Kontor.Infrastructure/KontorDbContext.cs` und `src/Kontor.Infrastructure/Configurations/`
+- [X] T016 Seed-Daten per `HasData` in `src/Kontor.Infrastructure/Configurations/`: Mitarbeitende Ilka Brandt, Tomás Okoye, Juna Sato, Rik Halvorsen; Projekte `NSL-ALB-01` „Antriebswartung Albatros“, `KBA-TG3-04` „Schildgenerator-Kalibrierung Tiefgrund III“, `HFL-PER-02` „Lebenserhaltung prüfen Perihel“
+- [X] T017 Repository-Implementierungen (nur Hinzufügen und Lesen) in `src/Kontor.Infrastructure/Repositories/`
+- [X] T018 Registrierung `AddKontorInfrastructure(connectionString)` in `src/Kontor.Infrastructure/DependencyInjection.cs`
+- [X] T019 `src/Kontor.Web/Program.cs`: Infrastruktur registrieren, Connection String `KontorDb` für LocalDB in `src/Kontor.Web/appsettings.Development.json`, ausstehende Migrationen in Development beim Start anwenden
+- [X] T020 Erste Migration `InitialCreate` mit dem lokalen Tool erzeugen (`dotnet tool restore`, `dotnet ef migrations add InitialCreate`) in `src/Kontor.Infrastructure/Migrations/`
+- [X] T021 Test-Double `InMemoryTimeEntryRepository` in `tests/Kontor.Core.Tests/Fakes/InMemoryTimeEntryRepository.cs`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
