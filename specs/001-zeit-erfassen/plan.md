@@ -26,7 +26,7 @@ testbare Klassen in `Kontor.Core`; `Kontor.Infrastructure` speichert mit EF Core
 
 **Storage**: SQL Server LocalDB, Datenbank `KontorDb`; Schema über EF-Core-Migrationen
 
-**Testing**: MSTest über `MSTest.Sdk` (Microsoft.Testing.Platform), ohne Mock-Bibliotheken
+**Testing**: MSTest über das Paket `MSTest` (Version zentral in `Directory.Packages.props`), ohne Mock-Bibliotheken
 
 **Target Platform**: Windows-Entwicklungsrechner mit LocalDB, Browser
 
@@ -50,9 +50,9 @@ gespeicherter Buchungen; Paketversionen fest und zentral
 | II. Test-First (NON-NEGOTIABLE) | ✅ Jede Regel bekommt MSTest-Tests vor der Implementierung | ✅ `tests/Kontor.Core.Tests`; Test-Double `InMemoryTimeEntryRepository` selbst geschrieben, keine Mock-Bibliothek |
 | III. Nachvollziehbarkeit | ✅ Spec verbietet Ändern und Löschen (FR-010) | ✅ Repository bietet nur Hinzufügen und Lesen; keine Bearbeiten- oder Löschen-Funktion in der Oberfläche |
 | IV. Englische Bezeichner | ✅ | ✅ `TimeEntry`, `Employee`, `Project`, `TimeRounding`, `BreakRule` usw. (siehe `data-model.md`) |
-| V. Feste Paketversionen | ✅ `Directory.Packages.props` mit festen Versionen | ⚠️ siehe Complexity Tracking: Die Version von `MSTest.Sdk` steht in `global.json`, weil MSBuild-SDKs nicht über `Directory.Packages.props` versioniert werden können |
+| V. Feste Paketversionen | ✅ `Directory.Packages.props` mit festen Versionen | ✅ Alle Pakete einschließlich `MSTest` mit fester Version in `Directory.Packages.props`; `global.json` legt nur die SDK-Version fest |
 
-Ergebnis: bestanden, eine begründete Abweichung (Complexity Tracking).
+Ergebnis: bestanden, keine Abweichung.
 
 ## Project Structure
 
@@ -74,7 +74,7 @@ Kein `contracts/`: Kontor bietet in dieser Phase keine Schnittstelle für andere
 
 ```text
 Kontor.slnx
-global.json                         # SDK-Version und MSTest.Sdk-Version
+global.json                         # nur die SDK-Version
 Directory.Build.props               # net10.0, Nullable, ImplicitUsings, TreatWarningsAsErrors
 Directory.Packages.props            # zentrale, feste Paketversionen
 .config/dotnet-tools.json           # dotnet-ef als lokales Tool
@@ -97,7 +97,7 @@ src/
     └── appsettings.Development.json
 
 tests/
-└── Kontor.Core.Tests/              # MSTest.Sdk
+└── Kontor.Core.Tests/              # MSTest-Paket
     ├── Rules/
     ├── Services/
     └── Fakes/                      # InMemoryTimeEntryRepository u. a.
@@ -114,4 +114,6 @@ referenziert `Kontor.Core`; `Kontor.Core` referenziert nichts.
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
-| Version von `MSTest.Sdk` in `global.json` statt in `Directory.Packages.props` (Prinzip V) | `MSTest.Sdk` ist ein MSBuild-Projekt-SDK; Central Package Management versioniert nur `PackageReference`, keine Projekt-SDKs. Die Version bleibt fest und steht an genau einer Stelle (`global.json`, `msbuild-sdks`) | Klassisches Testprojekt mit einzelnen `PackageReference`s für MSTest: mehr Pakete zu pflegen, und der Teamstandard ist `MSTest.Sdk` |
+| – | – | – |
+
+Keine Abweichungen. Die Abweichung aus dem ersten Planlauf (Version von `MSTest.Sdk` in `global.json`) ist entfallen: Das Testprojekt nutzt das Paket `MSTest` über Central Package Management (siehe research.md, R8).

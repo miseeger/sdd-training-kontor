@@ -72,11 +72,14 @@ klären Abhängigkeiten und Muster.
 ## R8 — Paketversionen und Testprojekt
 
 - **Decision**: `Directory.Packages.props` mit `ManagePackageVersionsCentrally` und festen
-  Versionen (EF Core 10.0.13). `MSTest.Sdk` 4.5.1 über `global.json` (`msbuild-sdks`).
-- **Rationale**: Prinzip V; MSBuild-Projekt-SDKs lassen sich nicht über Central Package
-  Management versionieren (siehe Complexity Tracking im Plan).
-- **Alternatives considered**: Versionen in den einzelnen Projektdateien (verstößt gegen
-  Prinzip V).
+  Versionen: EF Core 10.0.13 und `MSTest` 4.5.1. Das Testprojekt ist ein normales SDK-Projekt
+  mit `PackageReference` auf `MSTest`. `global.json` legt nur die SDK-Version fest.
+- **Rationale**: Prinzip V verlangt alle Paketversionen ausschließlich in
+  `Directory.Packages.props`. Das Projekt-SDK `MSTest.Sdk` ließe sich nur über `global.json`
+  versionieren (Befund C1 aus `/speckit-analyze`). Mit dem Paket `MSTest` gilt Prinzip V
+  ohne Ausnahme.
+- **Alternatives considered**: `MSTest.Sdk` mit Version in `global.json` (verstößt gegen
+  Prinzip V); Prinzip V ändern (eigener Constitution-Schritt, nicht mitten im Feature).
 
 ## R9 — Blazor-Render-Modus und Auswahl der Person
 
