@@ -8,6 +8,15 @@
 
 **Input**: User description: "Kontor ist die neue Zeiterfassung der Galactic Service Company (GSC), eines Wartungsdienstleisters mit rund 40 Technikerinnen und Technikern. Heute führen alle ihre Stunden in Tabellen, und die Produktverantwortliche tippt am Monatsende alles ab. Als Technikerin möchte ich meine Arbeitszeit auf das Projekt buchen, an dem ich gearbeitet habe, damit am Monatsende niemand meine Stunden abtippen muss. Eine Buchung hat Datum, Beginn, Ende, Projekt und eine optionale Notiz. Nach dem Speichern sehe ich meine Buchungen des Tages und die Tagessumme. Fachliche Regeln: Zeiten werden kaufmännisch auf 15 Minuten gerundet. Buchungen derselben Person dürfen sich zeitlich nicht überlappen. Es gilt eine Mindestpause nach gesetzlicher Vorgabe. Es gilt eine Tageshöchstarbeitszeit. Eine gespeicherte Buchung wird weder geändert noch gelöscht. Nicht Teil dieses Features: Wochenübersicht, Monatsabschluss und Korrektur von Buchungen. In dieser Phase gibt es keine Anmeldung; Mitarbeitende und Projekte sind fest hinterlegt. Projekte kommen später aus der Projektverwaltung Dockyard."
 
+## Clarifications
+
+### Session 2026-10-17
+
+- Q: Welche Unterbrechungen zwischen zwei Buchungen zählen als Pause? → A: Nur Lücken von mindestens 15 Minuten zwischen zwei Buchungen desselben Tages.
+- Q: Wie wird Arbeit erfasst, die über Mitternacht reicht? → A: Eine Buchung über Mitternacht wird abgelehnt; die Person bucht zwei Einträge, einen pro Tag.
+- Q: Welche Buchung wird abgelehnt, wenn eine Regel erst zusammen mit bestehenden Buchungen verletzt ist? → A: Die neue Buchung, die den Verstoß verursacht; bestehende Buchungen bleiben unverändert.
+- Q: Darf die Tageshöchstarbeitszeit von 10 Stunden in begründeten Fällen überschritten werden? → A: Nein, sie gilt ausnahmslos.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Arbeitszeit auf ein Projekt buchen (Priority: P1)
@@ -76,7 +85,10 @@ Nennung der Regel abgelehnt wird.
   → Die Buchung wird abgelehnt, weil nach der Rundung das Ende nicht nach dem Beginn liegt.
 - Was passiert, wenn sich zwei Buchungen nur an einer Grenze berühren (Ende = Beginn)?
   → Das ist keine Überschneidung.
-- Was passiert bei einer Buchung über Mitternacht?
+- Was passiert bei einer Buchung über Mitternacht? → Sie wird abgelehnt; die Person bucht
+  zwei Einträge, einen pro Tag.
+- Was passiert bei einer Pause von weniger als 15 Minuten zwischen zwei Buchungen? → Sie
+  zählt nicht als Pause.
 - Was passiert, wenn eine Person für einen Tag in der Zukunft bucht?
 
 ## Requirements *(mandatory)*
@@ -97,13 +109,18 @@ Nennung der Regel abgelehnt wird.
   ist das keine Überschneidung.
 - **FR-007**: Das System MUSS eine Buchung ablehnen, wenn die Tagesarbeitszeit der Person
   danach mehr als 6 Stunden beträgt und die Pause weniger als 30 Minuten, oder mehr als
-  9 Stunden und die Pause weniger als 45 Minuten.
+  9 Stunden und die Pause weniger als 45 Minuten. Als Pause zählen nur Lücken von
+  mindestens 15 Minuten zwischen zwei Buchungen desselben Tages.
 - **FR-008**: Das System MUSS eine Buchung ablehnen, wenn die Tagesarbeitszeit der Person
-  danach mehr als 10 Stunden beträgt.
-- **FR-009**: Bei jeder Ablehnung MUSS das System die verletzte Regel benennen.
+  danach mehr als 10 Stunden beträgt. Diese Grenze gilt ausnahmslos.
+- **FR-009**: Verletzt eine neue Buchung zusammen mit den bestehenden Buchungen des Tages
+  eine Regel, MUSS das System die neue Buchung ablehnen und die verletzte Regel benennen;
+  bestehende Buchungen bleiben unverändert.
 - **FR-010**: Gespeicherte Buchungen DÜRFEN weder geändert noch gelöscht werden können.
 - **FR-011**: Nach dem Speichern MUSS das System alle Buchungen der Person für diesen Tag
   und die Tagessumme anzeigen.
+- **FR-012**: Das System MUSS eine Buchung ablehnen, die über Mitternacht reicht. Arbeit über
+  Mitternacht wird als zwei Buchungen erfasst, eine pro Tag.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -130,7 +147,6 @@ Nennung der Regel abgelehnt wird.
 - Alle Mitarbeitenden arbeiten in derselben Ortszeit; Zeitzonen spielen keine Rolle.
 - Beginn und Ende werden jeweils einzeln gerundet; die Dauer ergibt sich aus den gerundeten
   Zeiten.
-- Als Pause gilt die Zeit zwischen zwei Buchungen desselben Tages.
 - Eine Notiz ist freier Text mit höchstens 500 Zeichen.
 - Mitarbeitende und Projekte werden in dieser Phase nicht über die Oberfläche gepflegt.
 - Korrekturen falscher Buchungen sind nicht Teil dieses Features; bis dahin bleibt eine
