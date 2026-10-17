@@ -182,3 +182,10 @@ Task: "OverlapRuleTests in tests/Kontor.Core.Tests/Rules/OverlapRuleTests.cs"
 - Verify tests fail before implementing
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
+
+---
+
+## Phase 6: Convergence
+
+- [ ] T041 CRITICAL: Die Version von `dotnet-ef` (10.0.13) steht in `.config/dotnet-tools.json` statt in `Directory.Packages.props`; mit Prinzip V in Einklang bringen per Constitution V (contradicts)
+- [ ] T042 Notizen über 500 Zeichen in `Kontor.Core` ablehnen (Test zuerst), statt sie erst an der Datenbank scheitern zu lassen, in `src/Kontor.Core/Services/TimeEntryService.cs` per data-model TimeEntry.Note (partial)
