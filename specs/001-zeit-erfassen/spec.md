@@ -16,6 +16,7 @@
 - Q: Wie wird Arbeit erfasst, die über Mitternacht reicht? → A: Eine Buchung über Mitternacht wird abgelehnt; die Person bucht zwei Einträge, einen pro Tag.
 - Q: Welche Buchung wird abgelehnt, wenn eine Regel erst zusammen mit bestehenden Buchungen verletzt ist? → A: Die neue Buchung, die den Verstoß verursacht; bestehende Buchungen bleiben unverändert.
 - Q: Darf die Tageshöchstarbeitszeit von 10 Stunden in begründeten Fällen überschritten werden? → A: Nein, sie gilt ausnahmslos.
+- Q: Wie soll Szenario 3 von User Story 1 zeigen, dass sich berührende Buchungen erlaubt sind, ohne der Pausenregel zu widersprechen? → A: Zweite Buchung 13:00–14:00; mit 6 Stunden Tagesarbeitszeit greift die Pausenregel noch nicht.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -42,8 +43,9 @@ Buchung anlegen und prüfen, dass sie abgelehnt wird.
    12:00–14:00 auf Projekt `KBA-TG3-04` bucht, **Then** wird die Buchung abgelehnt mit dem
    Hinweis, dass sie sich mit 08:00–13:00 überschneidet.
 3. **Given** Juna Sato hat am 2026-11-02 die Buchung 08:00–13:00, **When** sie
-   13:00–15:00 auf Projekt `KBA-TG3-04` bucht, **Then** wird die Buchung gespeichert
-   (Ende und Beginn berühren sich, sie überschneiden sich nicht).
+   13:00–14:00 auf Projekt `KBA-TG3-04` bucht, **Then** wird die Buchung gespeichert
+   (Ende und Beginn berühren sich, sie überschneiden sich nicht; 6 Stunden
+   Tagesarbeitszeit verlangen noch keine Pause).
 4. **Given** eine gespeicherte Buchung, **When** Juna Sato die Tagesliste öffnet,
    **Then** gibt es keine Möglichkeit, die Buchung zu ändern oder zu löschen.
 
