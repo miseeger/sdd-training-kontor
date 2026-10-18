@@ -12,7 +12,8 @@ Eine neue, rein lesende Seite zeigt für eine gewählte Person die Buchungen ein
 Sonntag), je Tag mit Tagessumme, dazu Wochensumme und Summe je Projekt; Blättern zur vorigen und
 nächsten Woche. Technisch: Die Woche und die Summen entstehen in `Kontor.Core` in einem neuen
 `WeekOverviewService`, der die bestehende Schnittstelle `ITimeEntryRepository` für jeden Tag der
-Woche liest und die gerundete Dauer aus Feature 001 (`TimeEntry.RoundedDuration`) verwendet.
+Woche liest. Die Tagessumme entsteht an einer Stelle, `DayOverview.From`, die auch die Erfassung
+aus Feature 001 nutzt (research.md R3).
 `Kontor.Web` bekommt eine Seite `WeekOverview.razor`, erreichbar von der Erfassungsseite und aus
 der Navigation. Keine Änderung am Datenbankschema, keine Migration, keine neuen Pakete.
 
@@ -72,6 +73,8 @@ src/
 ├── Kontor.Core/
 │   ├── Rules/Week.cs                         # neu: Montag bis Sonntag, vorige/nächste Woche
 │   └── Services/
+│       ├── DayOverview.cs                    # erweitert: From(entries), auch von TimeEntryService genutzt
+│       ├── TimeEntryService.cs               # GetDayAsync nutzt DayOverview.From
 │       ├── WeekOverview.cs                   # neu: Tage, Wochensumme, Summen je Projekt
 │       └── WeekOverviewService.cs            # neu: liest ITimeEntryRepository je Tag
 ├── Kontor.Infrastructure/                    # unverändert
@@ -84,6 +87,7 @@ src/
 tests/
 └── Kontor.Core.Tests/
     ├── Rules/WeekTests.cs                    # neu
+    ├── Services/DayOverviewTests.cs          # neu
     └── Services/WeekOverviewServiceTests.cs  # neu
 ```
 

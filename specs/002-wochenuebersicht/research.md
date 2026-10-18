@@ -28,13 +28,16 @@ Der Technical Context enthielt keine `NEEDS CLARIFICATION`. Die Entscheidungen a
 ## R3 — Summen
 
 - **Decision**: Tagessumme, Wochensumme und Summe je Projekt sind Summen von
-  `TimeEntry.RoundedDuration`. Die Tagesübersicht nutzt dafür `TimeEntryService.GetDayAsync` nicht,
-  sondern dieselbe Summenbildung im `WeekOverviewService`; ein gemeinsamer Test sichert
-  die Übereinstimmung (FR-007).
+  `TimeEntry.RoundedDuration`. Die Tagessumme wird **an genau einer Stelle** gebildet:
+  `DayOverview.From(entries)` in `Kontor.Core/Services`. `TimeEntryService.GetDayAsync` (Feature 001)
+  und `WeekOverviewService` nutzen beide diese Methode (FR-007).
+- **Correction** (2026-10-18, `/speckit-analyze` D1): Die erste Fassung bildete die Tagessumme im
+  `WeekOverviewService` ein zweites Mal und sicherte die Übereinstimmung nur über einen Test.
 - **Rationale**: FR-003, FR-004, FR-007, SC-002, SC-003. Weil jede gerundete Dauer ein Vielfaches
   von 15 Minuten ist, ist auch jede Summe eines; ein zweites Runden gibt es nicht.
-- **Alternatives considered**: `GetDayAsync` siebenmal aufrufen (möglich, koppelt aber die
-  Wochenübersicht an den Erfassungs-Service; die Summenbildung ist eine Zeile).
+- **Alternatives considered**: `GetDayAsync` siebenmal aufrufen (koppelt die Wochenübersicht an
+  den Erfassungs-Service); eigene Summenbildung im `WeekOverviewService` (erste Fassung, zwei
+  Stellen für dieselbe Regel, analyze D1).
 
 ## R4 — Projektnamen und Personenauswahl
 

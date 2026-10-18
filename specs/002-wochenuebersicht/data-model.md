@@ -5,6 +5,16 @@
 Keine neuen gespeicherten Entitäten. `Employee`, `Project` und `TimeEntry` kommen unverändert aus
 Feature 001 (`specs/001-zeit-erfassen/data-model.md`); gelesen wird nur.
 
+## DayOverview (Kontor.Core/Services, aus Feature 001, erweitert)
+
+| Field | Type | Bedeutung |
+|---|---|---|
+| `Entries` | Liste von `TimeEntry` | Buchungen eines Tages |
+| `Total` | `TimeSpan` | Summe der `RoundedDuration` |
+
+Neu: `From(IReadOnlyList<TimeEntry> entries)` bildet die Tagessumme; einzige Stelle dafür
+(FR-007, research.md R3).
+
 ## Week (Kontor.Core/Rules)
 
 | Field | Type | Bedeutung |
