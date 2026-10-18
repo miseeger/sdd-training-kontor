@@ -10,9 +10,9 @@
 
 ## Requirement Clarity
 
-- [ ] CHK001 Ist „kaufmännisch runden“ eindeutig definiert, einschließlich des Falls genau zwischen zwei Viertelstunden? [Clarity, Spec §FR-004]
+- [x] CHK001 Ist „kaufmännisch runden“ eindeutig definiert, einschließlich des Falls genau zwischen zwei Viertelstunden? [Clarity, Spec §FR-004]
 - [x] CHK002 Ist festgelegt, ob Beginn und Ende einzeln oder die Dauer gerundet wird, und steht das in den Anforderungen statt nur in den Annahmen? [Clarity, Spec §FR-004, Assumption]
-- [ ] CHK003 Ist „Tagesarbeitszeit“ definiert, z. B. als Summe der gerundeten Dauern aller Buchungen eines Tages? [Clarity, Spec §FR-007, §FR-008]
+- [x] CHK003 Ist „Tagesarbeitszeit“ definiert, z. B. als Summe der gerundeten Dauern aller Buchungen eines Tages? [Clarity, Spec §FR-007, §FR-008]
 - [x] CHK004 Sind die Schwellen der Pausenregel eindeutig („mehr als 6 Stunden“ gegenüber „ab 6 Stunden“)? [Clarity, Spec §FR-007]
 - [x] CHK005 Ist festgelegt, was „die verletzte Regel benennen“ für die Nutzerin bedeutet (Wortlaut oder Mindestinhalt des Hinweises)? [Clarity, Spec §FR-009]
 
@@ -24,7 +24,7 @@
 
 ## Edge Case Coverage
 
-- [ ] CHK009 Ist definiert, was passiert, wenn die Rundung das Ende auf Mitternacht setzt (z. B. 23:53 → 24:00)? [Edge Case, Gap, Spec §FR-004, §FR-012]
+- [x] CHK009 Ist definiert, was passiert, wenn die Rundung das Ende auf Mitternacht setzt (z. B. 23:53 → 24:00)? [Edge Case, Gap, Spec §FR-004, §FR-012]
 - [ ] CHK010 Ist definiert, welche Regel genannt wird, wenn eine Buchung mehrere Regeln zugleich verletzt? [Edge Case, Gap, Spec §FR-009]
 - [ ] CHK011 Sind Buchungen für zukünftige Tage erlaubt oder ausgeschlossen? [Edge Case, Gap]
 - [ ] CHK012 Gibt es eine Grenze, wie weit zurück gebucht werden darf? [Edge Case, Gap]
@@ -41,4 +41,5 @@
 - `/speckit-implement` reads checklist checkbox state as a gate and must not modify markers
 - `checklists/requirements.md` has a separate built-in lifecycle maintained by `/speckit-specify` and `/speckit-clarify`
 - Review 2026-10-17 (Fachseite und Entwicklung): 7 von 14 Punkten erfüllt. CHK001, CHK003, CHK008, CHK009, CHK010, CHK011 und CHK012 bleiben bewusst offen; `/speckit-implement` meldet sie, die Umsetzung darf trotzdem starten.
+- Review 2026-10-18 nach der Rundungsklärung (Claude als Reviewer im Auftrag des Auftraggebers): 10 von 14 Punkten erfüllt. CHK001 erfüllt (FR-004: Rest unter 8 Minuten ab, ab 8 auf; bei minutengenauer Eingabe kein Gleichstand), CHK003 erfüllt (FR-013: Tagesarbeitszeit aus den erfassten Zeiten), CHK009 hinfällig (Uhrzeiten werden nicht mehr gerundet; FR-012 gilt). CHK007 bleibt erfüllt, Prämisse „erst runden, dann prüfen“ überholt: alle Regeln rechnen einheitlich mit den erfassten Zeiten (FR-013). Bewusst offen: CHK008 (Begriffe für die Person uneinheitlich), CHK010 (welche Regel bei mehreren Verstößen genannt wird), CHK011 (zukünftige Tage), CHK012 (Grenze für rückwirkendes Buchen).
 - Fokus laut Auftrag: Rundung, Überschneidung, Pausenpflicht, Tageshöchstarbeitszeit; Standard-Tiefe; Publikum: Fachseite und Entwicklung vor `implement`. Performance und Sicherheit ausgeschlossen.
