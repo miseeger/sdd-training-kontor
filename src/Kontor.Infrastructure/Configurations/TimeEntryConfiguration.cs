@@ -15,6 +15,7 @@ internal sealed class TimeEntryConfiguration : IEntityTypeConfiguration<TimeEntr
         builder.Property(t => t.End).IsRequired();
         builder.Property(t => t.Note).HasMaxLength(TimeEntry.NoteMaxLength);
         builder.Ignore(t => t.Duration);
+        builder.Ignore(t => t.RoundedDuration);
 
         builder.HasOne<Employee>().WithMany().HasForeignKey(t => t.EmployeeId).OnDelete(DeleteBehavior.Restrict);
         builder.HasOne<Project>().WithMany().HasForeignKey(t => t.ProjectId).OnDelete(DeleteBehavior.Restrict);

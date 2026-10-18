@@ -4,7 +4,10 @@ using Kontor.Core.Rules;
 
 namespace Kontor.Core.Services;
 
-/// <summary>Books working time: rounds, checks all rules against the day of the person and saves.</summary>
+/// <summary>
+/// Books working time: checks all rules with the recorded times against the day of the person and saves
+/// start and end as recorded (FR-013). Only the duration is rounded (FR-004, FR-014).
+/// </summary>
 public sealed class TimeEntryService(ITimeEntryRepository repository)
 {
     public const string NoteRuleName = "Notiz";
@@ -16,7 +19,7 @@ public sealed class TimeEntryService(ITimeEntryRepository repository)
             return BookingResult.Rejected(new RuleViolation(NoteRuleName, $"Die Notiz darf höchstens {TimeEntry.NoteMaxLength} Zeichen lang sein."));
         }
 
-        var candidate = TimeRounding.Round(new TimeSlot(request.Start, request.End));
+        var candidate = new TimeSlot(request.Start, request.End);
         var existing = (await repository.GetForEmployeeAndDateAsync(request.EmployeeId, request.Date, cancellationToken))
             .Select(e => new TimeSlot(e.Start, e.End))
             .ToList();
@@ -38,7 +41,7 @@ public sealed class TimeEntryService(ITimeEntryRepository repository)
     public async Task<DayOverview> GetDayAsync(int employeeId, DateOnly date, CancellationToken cancellationToken = default)
     {
         var entries = await repository.GetForEmployeeAndDateAsync(employeeId, date, cancellationToken);
-        var total = entries.Aggregate(TimeSpan.Zero, (sum, e) => sum + e.Duration);
+        var total = entries.Aggregate(TimeSpan.Zero, (sum, e) => sum + e.RoundedDuration);
         return new DayOverview(entries, total);
     }
 }

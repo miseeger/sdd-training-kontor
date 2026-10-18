@@ -26,12 +26,19 @@ public sealed class MidnightRuleTests
     }
 
     [TestMethod]
-    public void Check_DurationZeroAfterRounding_ReturnsViolation()
+    public void Check_RoundedDurationZero_ReturnsViolation()
     {
-        var slot = TimeRounding.Round(new TimeSlot(new TimeOnly(8, 1), new TimeOnly(8, 5)));
-
-        var violation = MidnightRule.Check(slot);
+        var violation = MidnightRule.Check(new TimeSlot(new TimeOnly(8, 5), new TimeOnly(8, 10)));
 
         Assert.IsNotNull(violation);
+        Assert.AreEqual(MidnightRule.Name, violation.Rule);
+    }
+
+    [TestMethod]
+    public void Check_EightMinutes_ReturnsNoViolation()
+    {
+        var violation = MidnightRule.Check(new TimeSlot(new TimeOnly(8, 5), new TimeOnly(8, 13)));
+
+        Assert.IsNull(violation);
     }
 }

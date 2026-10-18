@@ -77,7 +77,7 @@
     {
         <table class="table" style="max-width: 48rem">
             <thead>
-                <tr><th>Beginn</th><th>Ende</th><th>Dauer</th><th>Projekt</th><th>Notiz</th></tr>
+                <tr><th>Beginn</th><th>Ende</th><th>Dauer (gerundet)</th><th>Projekt</th><th>Notiz</th></tr>
             </thead>
             <tbody>
                 @foreach (var entry in _day.Entries)
@@ -85,7 +85,7 @@
                     <tr>
                         <td>@entry.Start.ToString("HH:mm")</td>
                         <td>@entry.End.ToString("HH:mm")</td>
-                        <td>@FormatDuration(entry.Duration)</td>
+                        <td>@FormatDuration(entry.RoundedDuration)</td>
                         <td>@ProjectKey(entry.ProjectId)</td>
                         <td>@entry.Note</td>
                     </tr>
@@ -148,7 +148,7 @@
         _succeeded = result.Succeeded;
         _violatedRule = result.ViolatedRule;
         _message = result.Succeeded
-            ? $"Gespeichert: {result.Entry!.Start:HH\\:mm}–{result.Entry.End:HH\\:mm}."
+            ? $"Gespeichert: {result.Entry!.Start:HH\\:mm}–{result.Entry.End:HH\\:mm}, Dauer {FormatDuration(result.Entry.RoundedDuration)}."
             : result.Message;
 
         if (result.Succeeded)

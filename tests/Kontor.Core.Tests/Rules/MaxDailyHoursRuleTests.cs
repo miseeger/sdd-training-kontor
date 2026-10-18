@@ -23,4 +23,14 @@ public sealed class MaxDailyHoursRuleTests
 
         Assert.IsNull(violation);
     }
+
+    [TestMethod]
+    public void Check_TenRecordedHoursFromThreeEntries_ReturnsNoViolation()
+    {
+        TimeSlot slot(int sh, int sm, int eh, int em) => new(new TimeOnly(sh, sm), new TimeOnly(eh, em));
+
+        var violation = MaxDailyHoursRule.Check(slot(14, 0, 17, 14), [slot(6, 0, 9, 23), slot(10, 0, 13, 23)]);
+
+        Assert.IsNull(violation);
+    }
 }

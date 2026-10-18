@@ -31,4 +31,14 @@ public sealed class OverlapRuleTests
 
         Assert.IsNull(violation);
     }
+
+    [TestMethod]
+    public void Check_UsesRecordedTimes_OverlapWithinRoundingWindowIsRejected()
+    {
+        var existing = new[] { new TimeSlot(new TimeOnly(8, 0), new TimeOnly(12, 52)) };
+
+        var violation = OverlapRule.Check(new TimeSlot(new TimeOnly(12, 50), new TimeOnly(14, 0)), existing);
+
+        Assert.IsNotNull(violation);
+    }
 }

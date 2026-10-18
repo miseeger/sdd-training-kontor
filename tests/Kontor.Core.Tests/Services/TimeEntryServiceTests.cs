@@ -24,15 +24,51 @@ public sealed class TimeEntryServiceTests
 
     // User Story 1, scenario 1
     [TestMethod]
-    public async Task BookAsync_RoundsStartAndEnd_AndReportsDailyTotal()
+    public async Task BookAsync_KeepsRecordedTimes_AndRoundsDuration()
     {
         var result = await _service.BookAsync(Request(JunaSato, NslAlb01, November2, 8, 7, 12, 53));
 
         Assert.IsTrue(result.Succeeded);
-        Assert.AreEqual(new TimeOnly(8, 0), result.Entry!.Start);
-        Assert.AreEqual(new TimeOnly(13, 0), result.Entry.End);
+        Assert.AreEqual(new TimeOnly(8, 7), result.Entry!.Start);
+        Assert.AreEqual(new TimeOnly(12, 53), result.Entry.End);
+        Assert.AreEqual(new TimeSpan(4, 45, 0), result.Entry.RoundedDuration);
         var day = await _service.GetDayAsync(JunaSato, November2);
-        Assert.AreEqual(TimeSpan.FromHours(5), day.Total);
+        Assert.AreEqual(new TimeSpan(4, 45, 0), day.Total);
+    }
+
+    // Edge case: rounded duration 0 (FR-005)
+    [TestMethod]
+    public async Task BookAsync_FiveMinutes_IsRejected()
+    {
+        var result = await _service.BookAsync(Request(JunaSato, NslAlb01, November2, 8, 5, 8, 10));
+
+        Assert.IsFalse(result.Succeeded);
+        Assert.AreEqual(MidnightRule.Name, result.ViolatedRule);
+    }
+
+    // FR-013: overlap is checked with the recorded times, not the rounded ones
+    [TestMethod]
+    public async Task BookAsync_OverlapWithinRoundingWindow_IsRejected()
+    {
+        await _service.BookAsync(Request(JunaSato, NslAlb01, November2, 8, 0, 12, 52));
+
+        var result = await _service.BookAsync(Request(JunaSato, KbaTg304, November2, 12, 50, 14, 0));
+
+        Assert.IsFalse(result.Succeeded);
+        Assert.AreEqual(OverlapRule.Name, result.ViolatedRule);
+    }
+
+    // FR-014, SC-003: the daily total is the sum of the rounded durations
+    [TestMethod]
+    public async Task GetDayAsync_TotalIsSumOfRoundedDurations()
+    {
+        await _service.BookAsync(Request(JunaSato, NslAlb01, November2, 8, 7, 12, 53));
+        await _service.BookAsync(Request(JunaSato, KbaTg304, November2, 13, 30, 14, 38));
+
+        var day = await _service.GetDayAsync(JunaSato, November2);
+
+        Assert.AreEqual(new TimeSpan(5, 54, 0), day.Entries.Aggregate(TimeSpan.Zero, (sum, e) => sum + e.Duration));
+        Assert.AreEqual(new TimeSpan(6, 0, 0), day.Total);
     }
 
     // User Story 1, scenario 2
@@ -86,6 +122,20 @@ public sealed class TimeEntryServiceTests
     }
 
     // User Story 2, scenario 3: the new booking is rejected, existing ones stay unchanged
+    // FR-013: the maximum applies to the recorded working time
+    [TestMethod]
+    public async Task BookAsync_TenRecordedHours_IsSavedAlthoughRoundedTotalIsHigher()
+    {
+        await _service.BookAsync(Request(RikHalvorsen, HflPer02, November3, 6, 0, 9, 23));
+        await _service.BookAsync(Request(RikHalvorsen, HflPer02, November3, 10, 0, 13, 23));
+
+        var result = await _service.BookAsync(Request(RikHalvorsen, HflPer02, November3, 14, 0, 17, 14));
+
+        Assert.IsTrue(result.Succeeded);
+        var day = await _service.GetDayAsync(RikHalvorsen, November3);
+        Assert.AreEqual(new TimeSpan(10, 15, 0), day.Total);
+    }
+
     [TestMethod]
     public async Task BookAsync_ExceedingTenHours_IsRejectedAndExistingEntriesStay()
     {

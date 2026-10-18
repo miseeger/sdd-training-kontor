@@ -1,19 +1,17 @@
 namespace Kontor.Core.Rules;
 
-/// <summary>Rounds start and end separately to the nearest quarter hour (FR-004).</summary>
+/// <summary>
+/// Rounds the duration of a booking commercially to the quarter hour (FR-004).
+/// Start and end stay as recorded. With whole minutes a remainder below 8 minutes
+/// rounds down, from 8 minutes up; exactly 7.5 minutes cannot occur.
+/// </summary>
 public static class TimeRounding
 {
     private const int QuarterHourMinutes = 15;
-    private const int MinutesPerDay = 24 * 60;
 
-    public static TimeOnly RoundToQuarterHour(TimeOnly time)
+    public static TimeSpan RoundDuration(TimeSpan duration)
     {
-        var minutes = time.Ticks / (double)TimeSpan.TicksPerMinute;
-        var quarters = Math.Round(minutes / QuarterHourMinutes, MidpointRounding.AwayFromZero);
-        var roundedMinutes = (int)quarters * QuarterHourMinutes % MinutesPerDay;
-        return TimeOnly.FromTimeSpan(TimeSpan.FromMinutes(roundedMinutes));
+        var quarters = Math.Round(duration.TotalMinutes / QuarterHourMinutes, MidpointRounding.AwayFromZero);
+        return TimeSpan.FromMinutes(quarters * QuarterHourMinutes);
     }
-
-    public static TimeSlot Round(TimeSlot slot) =>
-        new(RoundToQuarterHour(slot.Start), RoundToQuarterHour(slot.End));
 }

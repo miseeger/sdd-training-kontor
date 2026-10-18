@@ -4,4 +4,6 @@ namespace Kontor.Core.Rules;
 public readonly record struct TimeSlot(TimeOnly Start, TimeOnly End)
 {
     public TimeSpan Duration => End > Start ? End - Start : TimeSpan.Zero;
+
+    public TimeSpan RoundedDuration => TimeRounding.RoundDuration(Duration);
 }

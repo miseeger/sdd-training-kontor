@@ -1,3 +1,5 @@
+using Kontor.Core.Rules;
+
 namespace Kontor.Core.Domain;
 
 /// <summary>
@@ -37,4 +39,7 @@ public sealed class TimeEntry
     public string? Note { get; private set; }
 
     public TimeSpan Duration => End - Start;
+
+    /// <summary>The duration rounded to the quarter hour (FR-004); not stored.</summary>
+    public TimeSpan RoundedDuration => TimeRounding.RoundDuration(Duration);
 }
