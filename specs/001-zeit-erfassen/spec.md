@@ -17,7 +17,15 @@
 - Q: Welche Buchung wird abgelehnt, wenn eine Regel erst zusammen mit bestehenden Buchungen verletzt ist? → A: Die neue Buchung, die den Verstoß verursacht; bestehende Buchungen bleiben unverändert.
 - Q: Darf die Tageshöchstarbeitszeit von 10 Stunden in begründeten Fällen überschritten werden? → A: Nein, sie gilt ausnahmslos.
 - Q: Wie soll Szenario 3 von User Story 1 zeigen, dass sich berührende Buchungen erlaubt sind, ohne der Pausenregel zu widersprechen? → A: Zweite Buchung 13:00–14:00; mit 6 Stunden Tagesarbeitszeit greift die Pausenregel noch nicht.
-- Q: Welches Beispiel zeigt eine Buchung, die durch die Rundung die Dauer 0 bekommt? → A: 08:01–08:05 (beides wird 08:00); das bisherige Beispiel 08:05–08:10 ergibt nach FR-004 08:00–08:15 und war falsch.
+- Q: Welches Beispiel zeigt eine Buchung, die durch die Rundung die Dauer 0 bekommt? → A: 08:01–08:05 (beides wird 08:00); das bisherige Beispiel 08:05–08:10 ergibt nach FR-004 08:00–08:15 und war falsch. *(Überholt durch Session 2026-10-18: Gerundet wird die Dauer, 08:05–08:10 ist wieder das Beispiel.)*
+
+### Session 2026-10-18
+
+- Q: Was rundet Kontor auf die Viertelstunde, wenn eine Buchung gespeichert wird? → A: Die Dauer jeder einzelnen Buchung, kaufmännisch; Beginn und Ende bleiben, wie gebucht. Bei minutengenauer Eingabe: Rest unter 8 Minuten abrunden, ab 8 Minuten aufrunden.
+- Q: Mit welchen Zeiten prüft Kontor Überschneidung, Pause und Tageshöchstarbeitszeit? → A: Mit den erfassten, ungerundeten Uhrzeiten.
+- Q: Was zeigen Tagesliste und Tagessumme nach dem Speichern? → A: Die Tagesliste zeigt die erfassten Uhrzeiten und die gerundete Dauer; die Tagessumme ist die Summe der gerundeten Dauern (sie wird abgerechnet).
+- Q: Was passiert mit einer Buchung, deren gerundete Dauer 0 Minuten beträgt? → A: Sie wird abgelehnt (z. B. 08:05–08:10).
+- Q: Was geschieht mit Buchungen, die vor dieser Klärung mit gerundeten Uhrzeiten gespeichert wurden? → A: Sie bleiben unverändert; ihre Dauer ist bereits ein Vielfaches von 15 Minuten und ändert sich durch die neue Regel nicht.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -25,21 +33,23 @@
 
 Eine Technikerin wählt sich aus der Liste der Mitarbeitenden aus und bucht für einen Tag
 Beginn und Ende ihrer Arbeit auf ein Projekt, optional mit einer Notiz. Kontor rundet die
-Zeiten, prüft, dass sich die Buchung nicht mit einer anderen Buchung derselben Person
-überschneidet, und zeigt nach dem Speichern alle Buchungen dieses Tages mit der Tagessumme.
+Dauer der Buchung, prüft, dass sich die Buchung nicht mit einer anderen Buchung derselben
+Person überschneidet, und zeigt nach dem Speichern alle Buchungen dieses Tages mit der
+Tagessumme.
 
 **Why this priority**: Ohne Buchen hat Kontor keinen Wert. Diese Story allein ersetzt
 bereits die Tabelle: Die Stunden liegen erfasst vor und müssen nicht mehr abgetippt werden.
 
-**Independent Test**: Eine Person auswählen, eine Buchung anlegen und prüfen, dass sie
-gerundet in der Tagesliste erscheint und die Tagessumme stimmt; eine überlappende zweite
+**Independent Test**: Eine Person auswählen, eine Buchung anlegen und prüfen, dass sie mit
+den erfassten Uhrzeiten und der gerundeten Dauer in der Tagesliste erscheint und die
+Tagessumme stimmt; eine überlappende zweite
 Buchung anlegen und prüfen, dass sie abgelehnt wird.
 
 **Acceptance Scenarios**:
 
 1. **Given** Juna Sato hat am 2026-11-02 noch keine Buchung, **When** sie 08:07–12:53 auf
-   Projekt `NSL-ALB-01` bucht, **Then** wird die Buchung als 08:00–13:00 gespeichert und
-   die Tagessumme zeigt 5:00 Stunden.
+   Projekt `NSL-ALB-01` bucht, **Then** wird die Buchung mit 08:07–12:53 gespeichert, ihre
+   Dauer von 4:46 Stunden wird auf 4:45 gerundet, und die Tagessumme zeigt 4:45 Stunden.
 2. **Given** Juna Sato hat am 2026-11-02 die Buchung 08:00–13:00, **When** sie
    12:00–14:00 auf Projekt `KBA-TG3-04` bucht, **Then** wird die Buchung abgelehnt mit dem
    Hinweis, dass sie sich mit 08:00–13:00 überschneidet.
@@ -84,9 +94,13 @@ Nennung der Regel abgelehnt wird.
 
 - Was passiert, wenn das Ende vor oder gleich dem Beginn liegt? → Die Buchung wird
   abgelehnt.
-- Was passiert, wenn eine Buchung durch die Rundung die Dauer 0 bekommt (z. B. 08:01–08:05,
-  beides wird 08:00)? → Die Buchung wird abgelehnt, weil nach der Rundung das Ende nicht nach
-  dem Beginn liegt.
+- Was passiert, wenn eine Buchung durch die Rundung die Dauer 0 bekommt (z. B. 08:05–08:10,
+  5 Minuten)? → Die Buchung wird abgelehnt.
+- Was passiert bei einer Buchung von 8 Minuten (z. B. 08:05–08:13)? → Sie wird gespeichert;
+  ihre gerundete Dauer ist 0:15.
+- Was passiert, wenn die Summe der gerundeten Dauern über 10 Stunden liegt, die erfasste
+  Arbeitszeit aber nicht? → Die Buchung wird gespeichert; Höchstarbeitszeit und Pause gelten
+  für die erfasste Zeit.
 - Was passiert, wenn sich zwei Buchungen nur an einer Grenze berühren (Ende = Beginn)?
   → Das ist keine Überschneidung.
 - Was passiert bei einer Buchung über Mitternacht? → Sie wird abgelehnt; die Person bucht
@@ -104,10 +118,11 @@ Nennung der Regel abgelehnt wird.
 - **FR-002**: Das System MUSS die Person, für die gebucht wird, aus einer fest hinterlegten
   Liste der Mitarbeitenden auswählen lassen; eine Anmeldung gibt es nicht.
 - **FR-003**: Das System MUSS als Projekt nur fest hinterlegte Projekte zur Auswahl anbieten.
-- **FR-004**: Das System MUSS Beginn und Ende einer Buchung kaufmännisch auf 15 Minuten
-  runden, bevor die Buchung geprüft und gespeichert wird.
-- **FR-005**: Das System MUSS eine Buchung ablehnen, deren gerundetes Ende nicht nach dem
-  gerundeten Beginn liegt.
+- **FR-004**: Das System MUSS die Dauer jeder Buchung kaufmännisch auf 15 Minuten runden:
+  Ein Rest unter 8 Minuten wird abgerundet, ab 8 Minuten aufgerundet. Beginn und Ende werden
+  so gespeichert, wie sie erfasst wurden.
+- **FR-005**: Das System MUSS eine Buchung ablehnen, deren Ende nicht nach dem Beginn liegt
+  oder deren gerundete Dauer 0 Minuten beträgt.
 - **FR-006**: Das System MUSS eine Buchung ablehnen, die sich zeitlich mit einer bestehenden
   Buchung derselben Person überschneidet. Berühren sich zwei Buchungen nur (Ende = Beginn),
   ist das keine Überschneidung.
@@ -122,9 +137,13 @@ Nennung der Regel abgelehnt wird.
   bestehende Buchungen bleiben unverändert.
 - **FR-010**: Gespeicherte Buchungen DÜRFEN weder geändert noch gelöscht werden können.
 - **FR-011**: Nach dem Speichern MUSS das System alle Buchungen der Person für diesen Tag
-  und die Tagessumme anzeigen.
+  und die Tagessumme anzeigen (Darstellung nach FR-014).
 - **FR-012**: Das System MUSS eine Buchung ablehnen, die über Mitternacht reicht. Arbeit über
   Mitternacht wird als zwei Buchungen erfasst, eine pro Tag.
+- **FR-013**: Überschneidung, Pause und Tagesarbeitszeit (FR-006 bis FR-008) MUSS das System
+  mit den erfassten, ungerundeten Zeiten berechnen.
+- **FR-014**: Die Tagesliste MUSS je Buchung die erfassten Uhrzeiten und die gerundete Dauer
+  zeigen; die Tagessumme ist die Summe der gerundeten Dauern.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -132,8 +151,8 @@ Nennung der Regel abgelehnt wird.
   hinterlegt.
 - **Projekt**: ein Wartungsauftrag, auf den gebucht wird; Projektschlüssel und Bezeichnung.
   In dieser Phase fest hinterlegt, später aus Dockyard.
-- **Buchung**: gehört zu genau einer Person und einem Projekt; Datum, Beginn, Ende (beide
-  gerundet), optionale Notiz. Nach dem Speichern unveränderlich.
+- **Buchung**: gehört zu genau einer Person und einem Projekt; Datum, Beginn und Ende (wie
+  erfasst), gerundete Dauer, optionale Notiz. Nach dem Speichern unveränderlich.
 
 ## Success Criteria *(mandatory)*
 
@@ -143,14 +162,16 @@ Nennung der Regel abgelehnt wird.
 - **SC-002**: 100 % der Buchungen, die eine Regel verletzen (Überschneidung, Pause,
   Höchstarbeitszeit), werden bei der Erfassung abgelehnt.
 - **SC-003**: Die angezeigte Tagessumme entspricht in 100 % der Fälle der Summe der
-  gerundeten Buchungen des Tages.
+  gerundeten Dauern der Buchungen des Tages.
 - **SC-004**: Keine gespeicherte Buchung lässt sich nachträglich ändern oder löschen.
 
 ## Assumptions
 
 - Alle Mitarbeitenden arbeiten in derselben Ortszeit; Zeitzonen spielen keine Rolle.
-- Beginn und Ende werden jeweils einzeln gerundet; die Dauer ergibt sich aus den gerundeten
-  Zeiten.
+- Beginn und Ende werden minutengenau erfasst; ein Rest von genau 7,5 Minuten kann deshalb
+  nicht entstehen.
+- Buchungen, die vor der Klärung vom 2026-10-18 gespeichert wurden, tragen gerundete
+  Uhrzeiten. Sie bleiben unverändert; ihre Dauer ändert sich durch die neue Regel nicht.
 - Eine Notiz ist freier Text mit höchstens 500 Zeichen.
 - Mitarbeitende und Projekte werden in dieser Phase nicht über die Oberfläche gepflegt.
 - Korrekturen falscher Buchungen sind nicht Teil dieses Features; bis dahin bleibt eine
