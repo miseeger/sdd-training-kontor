@@ -8,6 +8,15 @@
 
 **Input**: User description: "Wochenübersicht für Kontor, die Zeiterfassung der Galactic Service Company (GSC). Als Schichtleiter möchte ich sehen, was eine Person in einer Woche gebucht hat, damit ich die Woche nachvollziehen kann, ohne jeden Tag einzeln aufzurufen. Die Übersicht zeigt die Buchungen einer Person für eine Woche, je Tag mit Tagessumme, dazu die Wochensumme und die Summe je Projekt. Sie ist nur zum Lesen. Nicht Teil dieses Features: Übersicht für mehrere Personen oder Schichten, Freigabe von Wochen, Warnungen zur Wochenarbeitszeit, Export. Es gibt weiterhin keine Anmeldung. Grundlage sind die Buchungen aus Feature 001 mit der dort geklärten Rundung."
 
+## Clarifications
+
+### Session 2026-10-18
+
+- Q: An welchem Tag beginnt eine Woche in der Übersicht? → A: Montag; die Woche reicht von Montag bis Sonntag.
+- Q: Welche Woche zeigt die Übersicht, wenn sie geöffnet wird? → A: Die aktuelle Woche.
+- Q: Werden Tage ohne Buchung in der Übersicht angezeigt? → A: Ja, alle sieben Tage erscheinen, Tage ohne Buchung leer.
+- Q: Bleibt die gewählte Person erhalten, wenn zur vorigen oder nächsten Woche gewechselt wird? → A: Ja; beim Blättern wechselt nur die Woche.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Die Woche einer Person ansehen (Priority: P1)
@@ -92,21 +101,23 @@ Woche zu sehen ist.
 
 - **FR-001**: Das System MUSS die Person für die Wochenübersicht aus der fest hinterlegten Liste
   der Mitarbeitenden auswählen lassen; eine Anmeldung gibt es nicht.
-- **FR-002**: Das System MUSS für die gewählte Person und Woche alle Tage der Woche anzeigen, je
-  Tag mit den Buchungen (erfasste Uhrzeiten, gerundete Dauer, Projekt, Notiz) und der
+- **FR-002**: Das System MUSS für die gewählte Person und Woche alle sieben Tage der Woche
+  anzeigen, auch Tage ohne Buchung, je Tag mit den Buchungen (erfasste Uhrzeiten, gerundete Dauer, Projekt, Notiz) und der
   Tagessumme.
 - **FR-003**: Das System MUSS die Wochensumme als Summe der gerundeten Dauern aller Buchungen der
   Woche anzeigen.
 - **FR-004**: Das System MUSS je Projekt die Summe der gerundeten Dauern der Woche anzeigen.
-- **FR-005**: Das System MUSS das Wechseln zur vorigen und zur nächsten Woche ermöglichen.
+- **FR-005**: Das System MUSS das Wechseln zur vorigen und zur nächsten Woche ermöglichen; die
+  gewählte Person bleibt dabei erhalten.
 - **FR-006**: Die Wochenübersicht DARF keine Buchung anlegen, ändern oder löschen.
 - **FR-007**: Gerundete Dauern, Tagessummen und Wochensumme MÜSSEN mit den Werten der Erfassung
   aus Feature 001 übereinstimmen (gleiche Rundungsregel).
+- **FR-008**: Eine Woche MUSS von Montag bis Sonntag reichen.
+- **FR-009**: Beim Öffnen MUSS die Übersicht die aktuelle Woche zeigen.
 
 ### Key Entities *(include if feature involves data)*
 
-- **Woche**: ein Zeitraum von sieben aufeinanderfolgenden Tagen; bestimmt, welche Buchungen
-  gezeigt werden.
+- **Woche**: Montag bis Sonntag; bestimmt, welche Buchungen gezeigt werden.
 - **Buchung**: aus Feature 001; Datum, Beginn und Ende (wie erfasst), gerundete Dauer, Projekt,
   optionale Notiz. Wird hier nur gelesen.
 - **Mitarbeitende, Projekt**: aus Feature 001, fest hinterlegt.
@@ -123,9 +134,6 @@ Woche zu sehen ist.
 
 ## Assumptions
 
-- Eine Woche beginnt am Montag und endet am Sonntag (ISO 8601, in Deutschland üblich).
-- Beim Öffnen zeigt die Übersicht die aktuelle Woche.
-- Tage ohne Buchung werden mit angezeigt, damit die Woche vollständig zu sehen ist.
 - Die Übersicht ist von der Erfassungsseite aus erreichbar.
 - Alle Werte kommen aus den bestehenden Buchungen; das Feature speichert nichts Neues.
 - Die Rundung folgt Feature 001: gerundet wird die Dauer jeder Buchung kaufmännisch auf
