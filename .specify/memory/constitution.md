@@ -39,11 +39,15 @@ Fachbegriff deutsch ist.
 
 ### V. Feste Paketversionen
 
-Paketversionen MÜSSEN ausschließlich zentral in `Directory.Packages.props` stehen.
-Platzhalter wie `10.*` DÜRFEN NICHT verwendet werden.
+Versionen von NuGet-Paketen MÜSSEN ausschließlich zentral in `Directory.Packages.props`
+stehen. Ausgenommen sind die SDK-Version in `global.json` und die Versionen lokaler
+.NET-Tools im Tool-Manifest `.config/dotnet-tools.json`; auch dort MÜSSEN feste Versionen
+stehen. Platzhalter wie `10.*` DÜRFEN an keiner dieser Stellen verwendet werden.
 
 *Begründung:* Jeder Build verwendet dieselben Pakete, Aktualisierungen sind bewusste
-Änderungen an einer Stelle.
+Änderungen an einer Stelle. Central Package Management erfasst weder das SDK noch lokale
+Tools; `/speckit-analyze` und `/speckit-converge` meldeten das in Feature 001 als CRITICAL
+(`MSTest.Sdk`, `dotnet-ef`), obwohl es keine andere Ablage gibt (Änderung 1.1.0).
 
 ## Technische Rahmenbedingungen
 
@@ -64,4 +68,4 @@ Platzhalter wie `10.*` DÜRFEN NICHT verwendet werden.
 - Die Einhaltung wird im Constitution Check jedes Plans und durch `/speckit-analyze`
   geprüft.
 
-**Version**: 1.0.0 | **Ratified**: 2026-10-17 | **Last Amended**: 2026-10-17
+**Version**: 1.1.0 | **Ratified**: 2026-10-17 | **Last Amended**: 2026-10-18
