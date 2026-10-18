@@ -1,6 +1,6 @@
 # Implementation Plan: Zeit erfassen
 
-**Branch**: `001-zeit-erfassen` | **Date**: 2026-10-17 | **Spec**: [spec.md](spec.md)
+**Branch**: `001-zeit-erfassen` | **Date**: 2026-10-18 (aktualisiert nach Clarifications 2026-10-18, Rundung) | **Spec**: [spec.md](spec.md)
 
 **Input**: Feature specification from `/specs/001-zeit-erfassen/spec.md`
 
@@ -9,9 +9,10 @@
 ## Summary
 
 Mitarbeitende buchen Arbeitszeit mit Datum, Beginn, Ende, Projekt und optionaler Notiz.
-Kontor rundet Beginn und Ende auf 15 Minuten und prüft Überschneidung, Mindestpause,
-Tageshöchstarbeitszeit und Buchungen über Mitternacht, bevor gespeichert wird; gespeicherte
-Buchungen sind unveränderlich. Technisch: Alle Regeln liegen als reine, ohne Datenbank
+Kontor speichert Beginn und Ende so, wie sie erfasst wurden, rundet die Dauer jeder Buchung
+kaufmännisch auf 15 Minuten und prüft Überschneidung, Mindestpause, Tageshöchstarbeitszeit und
+Buchungen über Mitternacht mit den erfassten Zeiten, bevor gespeichert wird; gespeicherte
+Buchungen sind unveränderlich. Die Tagessumme ist die Summe der gerundeten Dauern. Technisch: Alle Regeln liegen als reine, ohne Datenbank
 testbare Klassen in `Kontor.Core`; `Kontor.Infrastructure` speichert mit EF Core in SQL Server
 (LocalDB); `Kontor.Web` ist eine Blazor Web App mit globalem Render-Modus
 `InteractiveServer` und einer Seite zum Erfassen mit der Tagesliste.
@@ -36,7 +37,8 @@ testbare Klassen in `Kontor.Core`; `Kontor.Infrastructure` speichert mit EF Core
 Prüfen und Speichern spürbar sofort (unter 1 Sekunde)
 
 **Constraints**: Alle Fachregeln ohne Datenbank testbar; keine Änderung oder Löschung
-gespeicherter Buchungen; Paketversionen fest und zentral
+gespeicherter Buchungen; keine Datenmigration bestehender Buchungen; Paketversionen fest und
+zentral
 
 **Scale/Scope**: rund 40 Mitarbeitende, etwa 20.000 Buchungen pro Jahr, eine Seite
 
@@ -46,13 +48,13 @@ gespeicherter Buchungen; Paketversionen fest und zentral
 
 | Prinzip | Prüfung vor Phase 0 | Prüfung nach Phase 1 |
 |---|---|---|
-| I. Fachlogik-First | ✅ Rundung, Überschneidung, Pause, Höchstarbeitszeit und Mitternacht liegen in `Kontor.Core`; `Kontor.Web` und `Kontor.Infrastructure` rufen nur auf | ✅ `data-model.md` und Struktur: Regeln in `Kontor.Core/Rules`, `TimeEntryService` orchestriert; Web und Infrastructure ohne Regelcode |
+| I. Fachlogik-First | ✅ Rundung der Dauer, Überschneidung, Pause, Höchstarbeitszeit und Mitternacht liegen in `Kontor.Core`; `Kontor.Web` und `Kontor.Infrastructure` rufen nur auf | ✅ `data-model.md` und Struktur: Regeln in `Kontor.Core/Rules`, `TimeEntryService` orchestriert; Web und Infrastructure ohne Regelcode |
 | II. Test-First (NON-NEGOTIABLE) | ✅ Jede Regel bekommt MSTest-Tests vor der Implementierung | ✅ `tests/Kontor.Core.Tests`; Test-Double `InMemoryTimeEntryRepository` selbst geschrieben, keine Mock-Bibliothek |
 | III. Nachvollziehbarkeit | ✅ Spec verbietet Ändern und Löschen (FR-010) | ✅ Repository bietet nur Hinzufügen und Lesen; keine Bearbeiten- oder Löschen-Funktion in der Oberfläche |
 | IV. Englische Bezeichner | ✅ | ✅ `TimeEntry`, `Employee`, `Project`, `TimeRounding`, `BreakRule` usw. (siehe `data-model.md`) |
-| V. Feste Paketversionen | ✅ `Directory.Packages.props` mit festen Versionen | ✅ Alle Pakete einschließlich `MSTest` mit fester Version in `Directory.Packages.props`; `global.json` legt nur die SDK-Version fest |
+| V. Feste Paketversionen | ⚠️ NuGet-Pakete mit festen Versionen in `Directory.Packages.props`; die Version von `dotnet-ef` steht im Tool-Manifest | ⚠️ Alle NuGet-Pakete einschließlich `MSTest` fest in `Directory.Packages.props`; `global.json` legt nur die SDK-Version fest; **`dotnet-ef` 10.0.13 in `.config/dotnet-tools.json`** (siehe Complexity Tracking) |
 
-Ergebnis: bestanden, keine Abweichung.
+Ergebnis: bestanden mit einer begründeten Abweichung (Prinzip V, lokales Tool). Im ersten Planlauf war sie nicht erkannt; `/speckit-converge` hat sie als T041 gemeldet.
 
 ## Project Structure
 
@@ -114,6 +116,6 @@ referenziert `Kontor.Core`; `Kontor.Core` referenziert nichts.
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
-| – | – | – |
+| Version von `dotnet-ef` im Tool-Manifest `.config/dotnet-tools.json` statt in `Directory.Packages.props` (Prinzip V) | Lokale .NET-Tools werden über das Tool-Manifest wiederhergestellt (`dotnet tool restore`, research.md R6); Central Package Management versioniert nur `PackageReference` | Globales `dotnet-ef` (zusätzliche Installation auf jedem Rechner, R6); die Konstruktion lässt sich im Code nicht auflösen. Offen als T041; die Lösung gehört in die Constitution, nicht in diesen Plan |
 
-Keine Abweichungen. Die Abweichung aus dem ersten Planlauf (Version von `MSTest.Sdk` in `global.json`) ist entfallen: Das Testprojekt nutzt das Paket `MSTest` über Central Package Management (siehe research.md, R8).
+Die Abweichung aus dem ersten Planlauf (Version von `MSTest.Sdk` in `global.json`) ist entfallen: Das Testprojekt nutzt das Paket `MSTest` über Central Package Management (siehe research.md, R8).
