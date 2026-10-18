@@ -1,6 +1,6 @@
 # Implementation Plan: Zeit erfassen
 
-**Branch**: `001-zeit-erfassen` | **Date**: 2026-10-18 (aktualisiert nach Clarifications 2026-10-18, Rundung) | **Spec**: [spec.md](spec.md)
+**Branch**: `001-zeit-erfassen` | **Date**: 2026-10-18 (aktualisiert nach Clarifications 2026-10-18, Rundung, und Constitution 1.1.0) | **Spec**: [spec.md](spec.md)
 
 **Input**: Feature specification from `/specs/001-zeit-erfassen/spec.md`
 
@@ -52,9 +52,9 @@ zentral
 | II. Test-First (NON-NEGOTIABLE) | ✅ Jede Regel bekommt MSTest-Tests vor der Implementierung | ✅ `tests/Kontor.Core.Tests`; Test-Double `InMemoryTimeEntryRepository` selbst geschrieben, keine Mock-Bibliothek |
 | III. Nachvollziehbarkeit | ✅ Spec verbietet Ändern und Löschen (FR-010) | ✅ Repository bietet nur Hinzufügen und Lesen; keine Bearbeiten- oder Löschen-Funktion in der Oberfläche |
 | IV. Englische Bezeichner | ✅ | ✅ `TimeEntry`, `Employee`, `Project`, `TimeRounding`, `BreakRule` usw. (siehe `data-model.md`) |
-| V. Feste Paketversionen | ⚠️ NuGet-Pakete mit festen Versionen in `Directory.Packages.props`; die Version von `dotnet-ef` steht im Tool-Manifest | ⚠️ Alle NuGet-Pakete einschließlich `MSTest` fest in `Directory.Packages.props`; `global.json` legt nur die SDK-Version fest; **`dotnet-ef` 10.0.13 in `.config/dotnet-tools.json`** (siehe Complexity Tracking) |
+| V. Feste Paketversionen (1.1.0) | ✅ NuGet-Pakete mit festen Versionen in `Directory.Packages.props`; SDK-Version fest in `global.json`; `dotnet-ef` fest im Tool-Manifest | ✅ Alle NuGet-Pakete einschließlich `MSTest` fest in `Directory.Packages.props`; `global.json` mit fester SDK-Version; `dotnet-ef` 10.0.13 fest in `.config/dotnet-tools.json`; nirgends Platzhalter |
 
-Ergebnis: bestanden mit einer begründeten Abweichung (Prinzip V, lokales Tool). Im ersten Planlauf war sie nicht erkannt; `/speckit-converge` hat sie als T041 gemeldet.
+Ergebnis: bestanden, keine Abweichung (geprüft gegen Constitution 1.1.0).
 
 ## Project Structure
 
@@ -116,6 +116,7 @@ referenziert `Kontor.Core`; `Kontor.Core` referenziert nichts.
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
-| Version von `dotnet-ef` im Tool-Manifest `.config/dotnet-tools.json` statt in `Directory.Packages.props` (Prinzip V) | Lokale .NET-Tools werden über das Tool-Manifest wiederhergestellt (`dotnet tool restore`, research.md R6); Central Package Management versioniert nur `PackageReference` | Globales `dotnet-ef` (zusätzliche Installation auf jedem Rechner, R6); die Konstruktion lässt sich im Code nicht auflösen. Offen als T041; die Lösung gehört in die Constitution, nicht in diesen Plan |
+| – | – | – |
 
+Keine Abweichungen. Die Abweichung zu `dotnet-ef` im Tool-Manifest (bisher hier begründet, als T041 von `/speckit-converge` gemeldet) ist mit Constitution 1.1.0 entfallen: Prinzip V nimmt lokale Tools ausdrücklich aus und verlangt dort feste Versionen.
 Die Abweichung aus dem ersten Planlauf (Version von `MSTest.Sdk` in `global.json`) ist entfallen: Das Testprojekt nutzt das Paket `MSTest` über Central Package Management (siehe research.md, R8).
