@@ -39,8 +39,10 @@ description: "Task list for feature 002 Wochenübersicht"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T002 `WeekTests` in `tests/Kontor.Core.Tests/Rules/WeekTests.cs`: `Containing` liefert für Montag 2026-11-02, Mittwoch 2026-11-04 und Sonntag 2026-11-08 die Woche mit `Monday` 2026-11-02 und `Sunday` 2026-11-08; `Days` hat sieben Tage; `Next` beginnt am 2026-11-09, `Previous` am 2026-10-26 (FR-005, FR-008)
-- [ ] T003 `Week` in `src/Kontor.Core/Rules/Week.cs`: `Monday`, `Sunday`, `Days`, `Containing(DateOnly)`, `Previous`, `Next` (macht T002 grün)
+- [ ] T002 [P] `WeekTests` in `tests/Kontor.Core.Tests/Rules/WeekTests.cs`: `Containing` liefert für Montag 2026-11-02, Mittwoch 2026-11-04 und Sonntag 2026-11-08 die Woche mit `Monday` 2026-11-02 und `Sunday` 2026-11-08; `Days` hat sieben Tage; `Next` beginnt am 2026-11-09, `Previous` am 2026-10-26; über den Jahreswechsel (Woche vom 2026-12-28 → 2027-01-04); `Next` und danach `Previous` ergibt wieder dieselbe Woche (FR-005, FR-008)
+- [ ] T003 [P] `DayOverviewTests` in `tests/Kontor.Core.Tests/Services/DayOverviewTests.cs`: `DayOverview.From` summiert die `RoundedDuration` (08:07–12:53 und 13:30–16:00 → 7:15), leere Liste → 0:00 (FR-007, research.md R3)
+- [ ] T004 `Week` in `src/Kontor.Core/Rules/Week.cs`: `Monday`, `Sunday`, `Days`, `Containing(DateOnly)`, `Previous`, `Next` (macht T002 grün)
+- [ ] T005 `DayOverview.From(entries)` in `src/Kontor.Core/Services/DayOverview.cs`; `TimeEntryService.GetDayAsync` in `src/Kontor.Core/Services/TimeEntryService.cs` nutzt sie (macht T003 grün; die Tests von Feature 001 bleiben grün)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -56,15 +58,15 @@ description: "Task list for feature 002 Wochenübersicht"
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T004 [US1] `WeekOverviewServiceTests` in `tests/Kontor.Core.Tests/Services/WeekOverviewServiceTests.cs`: Akzeptanzszenario 1 von User Story 1 (Tage, gerundete Dauern, Tagessummen 7:15 und 4:00, Wochensumme 11:15); Szenario 2 (Woche ohne Buchung: sieben leere Tage, Wochensumme 0:00); Buchungen anderer Personen und anderer Wochen zählen nicht; Tagessumme gleich `TimeEntryService.GetDayAsync` (FR-002, FR-003, FR-007); nutzt `InMemoryTimeEntryRepository`
+- [ ] T006 [US1] `WeekOverviewServiceTests` in `tests/Kontor.Core.Tests/Services/WeekOverviewServiceTests.cs`: Akzeptanzszenario 1 von User Story 1 (Tage, gerundete Dauern, Tagessummen 7:15 und 4:00, Wochensumme 11:15); Szenario 2 (Woche ohne Buchung: sieben leere Tage, Wochensumme 0:00); Buchungen anderer Personen und anderer Wochen zählen nicht (FR-002, FR-003); nutzt `InMemoryTimeEntryRepository`
 
 ### Implementation for User Story 1
 
-- [ ] T005 [P] [US1] `WeekOverview` in `src/Kontor.Core/Services/WeekOverview.cs`: `Week`, `Days` (sieben `DayOverview`), `Total` (data-model.md)
-- [ ] T006 [US1] `WeekOverviewService` in `src/Kontor.Core/Services/WeekOverviewService.cs`: liest `ITimeEntryRepository.GetForEmployeeAndDateAsync` für jeden Tag der Woche, Tagessummen und Wochensumme aus `RoundedDuration` (research.md R2, R3; macht T004 grün; depends on T003, T005)
-- [ ] T007 [US1] `WeekOverviewService` in `src/Kontor.Web/Program.cs` registrieren
-- [ ] T008 [US1] Seite `src/Kontor.Web/Components/Pages/WeekOverview.razor`, Route `/woche`: Person aus Liste wählen, beim Öffnen die aktuelle Woche, je Tag Datum und Wochentag, Buchungen mit erfassten Uhrzeiten, gerundeter Dauer, Projekt und Notiz, Tagessumme, Wochensumme; keine Funktion zum Anlegen, Ändern oder Löschen (FR-001, FR-002, FR-003, FR-006, FR-009)
-- [ ] T009 [US1] Navigation: Eintrag „Wochenübersicht“ in `src/Kontor.Web/Components/Layout/NavMenu.razor` und Link auf der Erfassungsseite `src/Kontor.Web/Components/Pages/Booking.razor` (Assumption „von der Erfassungsseite erreichbar“)
+- [ ] T007 [P] [US1] `WeekOverview` in `src/Kontor.Core/Services/WeekOverview.cs`: `Week`, `Days` (sieben `DayOverview`), `Total` (data-model.md)
+- [ ] T008 [US1] `WeekOverviewService` in `src/Kontor.Core/Services/WeekOverviewService.cs`: liest `ITimeEntryRepository.GetForEmployeeAndDateAsync` für jeden Tag der Woche, Tagessummen über `DayOverview.From`, Wochensumme als Summe der Tagessummen (research.md R2, R3; macht T006 grün; depends on T004, T005, T007)
+- [ ] T009 [US1] `WeekOverviewService` in `src/Kontor.Web/Program.cs` registrieren
+- [ ] T010 [US1] Seite `src/Kontor.Web/Components/Pages/WeekOverview.razor`, Route `/woche`: Person aus Liste wählen, ohne gewählte Person ein Hinweis, eine Person zu wählen; beim Öffnen die aktuelle Woche; je Tag Datum und Wochentag, Buchungen mit erfassten Uhrzeiten, gerundeter Dauer, Projekt und Notiz, Tagessumme; Wochensumme; keine Funktion zum Anlegen, Ändern oder Löschen (FR-001, FR-002, FR-003, FR-006, FR-009, Edge Case „noch keine Person gewählt“)
+- [ ] T011 [US1] Navigation: Eintrag „Wochenübersicht“ in `src/Kontor.Web/Components/Layout/NavMenu.razor` und Link auf der Erfassungsseite `src/Kontor.Web/Components/Pages/Booking.razor` (Assumption „von der Erfassungsseite erreichbar“)
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -78,13 +80,13 @@ description: "Task list for feature 002 Wochenübersicht"
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T010 [US2] `WeekOverviewServiceTests` (User Story 2) in `tests/Kontor.Core.Tests/Services/WeekOverviewServiceTests.cs`: Summen je Projekt nur für Projekte mit Buchungen, sortiert nach Schlüssel, mit Bezeichnung; Summe der Projektsummen = Wochensumme (FR-004, SC-003); Test-Double `InMemoryProjectRepository` in `tests/Kontor.Core.Tests/Fakes/InMemoryProjectRepository.cs`
+- [ ] T012 [US2] `WeekOverviewServiceTests` (User Story 2) in `tests/Kontor.Core.Tests/Services/WeekOverviewServiceTests.cs`: Summen je Projekt nur für Projekte mit Buchungen, sortiert nach Schlüssel, mit Bezeichnung; Summe der Projektsummen = Wochensumme (FR-004, SC-003); Test-Double `InMemoryProjectRepository` in `tests/Kontor.Core.Tests/Fakes/InMemoryProjectRepository.cs`
 
 ### Implementation for User Story 2
 
-- [ ] T011 [P] [US2] `ProjectTotal` in `src/Kontor.Core/Services/ProjectTotal.cs`: `ProjectKey`, `ProjectName`, `Total` (data-model.md)
-- [ ] T012 [US2] `ProjectTotals` in `WeekOverview` ergänzen und im `WeekOverviewService` über `IProjectRepository.GetAllAsync` bilden in `src/Kontor.Core/Services/` (research.md R4; macht T010 grün)
-- [ ] T013 [US2] Summen je Projekt in `src/Kontor.Web/Components/Pages/WeekOverview.razor` anzeigen
+- [ ] T013 [P] [US2] `ProjectTotal` in `src/Kontor.Core/Services/ProjectTotal.cs`: `ProjectKey`, `ProjectName`, `Total` (data-model.md)
+- [ ] T014 [US2] `ProjectTotals` in `WeekOverview` ergänzen und im `WeekOverviewService` über `IProjectRepository.GetAllAsync` bilden in `src/Kontor.Core/Services/` (research.md R4; macht T012 grün)
+- [ ] T015 [US2] Summen je Projekt in `src/Kontor.Web/Components/Pages/WeekOverview.razor` anzeigen
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -96,13 +98,11 @@ description: "Task list for feature 002 Wochenübersicht"
 
 **Independent Test**: Woche vom 2026-11-02 → nächste Woche zeigt 2026-11-09 bis 2026-11-15, Juna Sato bleibt gewählt; zurück → wieder die Woche vom 2026-11-02.
 
-### Tests for User Story 3 ⚠️
-
-- [ ] T014 [US3] Blättern in `tests/Kontor.Core.Tests/Rules/WeekTests.cs` absichern: `Next` und `Previous` über einen Jahreswechsel (Woche vom 2026-12-28 → 2027-01-04) und hin und zurück wieder dieselbe Woche (FR-005)
+Keine eigenen Tests: Die Wochenlogik (`Next`, `Previous`) ist in T002 abgedeckt, diese Story ist Oberfläche (Prinzip II gilt für Regeln in `Kontor.Core`).
 
 ### Implementation for User Story 3
 
-- [ ] T015 [US3] Schaltflächen „vorige Woche“ und „nächste Woche“ in `src/Kontor.Web/Components/Pages/WeekOverview.razor`; die gewählte Person bleibt im Komponentenzustand (FR-005; macht T014 nutzbar)
+- [ ] T016 [US3] Schaltflächen „vorige Woche“ und „nächste Woche“ in `src/Kontor.Web/Components/Pages/WeekOverview.razor` über `Week.Previous` und `Week.Next`; die gewählte Person bleibt im Komponentenzustand (FR-005)
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -112,8 +112,8 @@ description: "Task list for feature 002 Wochenübersicht"
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T016 [P] `README.md`: Wochenübersicht in der Kurzbeschreibung ergänzen, Verweis auf `specs/002-wochenuebersicht/quickstart.md`
-- [ ] T017 Prüfszenarien aus `specs/002-wochenuebersicht/quickstart.md` durchgehen
+- [ ] T017 [P] `README.md`: Wochenübersicht in der Kurzbeschreibung ergänzen, Verweis auf `specs/002-wochenuebersicht/quickstart.md`
+- [ ] T018 Prüfszenarien aus `specs/002-wochenuebersicht/quickstart.md` durchgehen
 
 ---
 
@@ -125,7 +125,7 @@ description: "Task list for feature 002 Wochenübersicht"
 - **Foundational (Phase 2)**: hängt von Setup ab, blockiert alle User Stories
 - **User Story 1 (Phase 3)**: hängt von Foundational ab
 - **User Story 2 (Phase 4)**: hängt von User Story 1 ab (erweitert `WeekOverview` und den Service)
-- **User Story 3 (Phase 5)**: hängt von Foundational ab; T015 erweitert die Seite aus T008
+- **User Story 3 (Phase 5)**: hängt von User Story 1 ab; T016 erweitert die Seite aus T010
 - **Polish (Phase 6)**: nach den gewünschten User Stories
 
 ### Within Each User Story
@@ -135,9 +135,10 @@ description: "Task list for feature 002 Wochenübersicht"
 
 ### Parallel Opportunities
 
-- User Story 1: T005 parallel zu T004
-- User Story 2: T011 parallel zu T010
-- Polish: T016
+- Foundational: T002 und T003
+- User Story 1: T007 parallel zu T006
+- User Story 2: T013 parallel zu T012
+- Polish: T017
 
 ---
 
